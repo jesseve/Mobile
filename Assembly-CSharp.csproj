@@ -5,7 +5,7 @@
 	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 	<ProductVersion>10.0.20506</ProductVersion>
 	<SchemaVersion>2.0</SchemaVersion>
-	<ProjectGuid>{D12F9AB9-DF02-FA36-300D-BAB7CAD01BF9}</ProjectGuid>
+	<ProjectGuid>{B55A5DCB-A5CC-5A90-3B00-7147DC78DB07}</ProjectGuid>
 	<OutputType>Library</OutputType>
 	<AppDesignerFolder>Properties</AppDesignerFolder>
 	<RootNamespace></RootNamespace>
@@ -55,6 +55,7 @@
      <Compile Include="Assets\_scripts\MenuManager.cs" />
      <Compile Include="Assets\_scripts\Movement.cs" />
      <Compile Include="Assets\_scripts\PlayerManager.cs" />
+     <Compile Include="Assets\_scripts\SpawnedBlock.cs" />
      <Compile Include="Assets\öexamples\Example Games\2D Scrolling Shooter\Scripts\Background.cs" />
      <Compile Include="Assets\öexamples\Example Games\2D Scrolling Shooter\Scripts\Bullet.cs" />
      <Compile Include="Assets\öexamples\Example Games\2D Scrolling Shooter\Scripts\DestroyArea.cs" />

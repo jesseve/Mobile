@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Block : MonoBehaviour {
 
@@ -9,9 +10,11 @@ public class Block : MonoBehaviour {
     public static Color[] colors = { Color.red, Color.blue, Color.green, Color.yellow, Color.cyan };
     public static Shape[] shapes = { Shape.Circle, Shape.Square, Shape.Triangle, Shape.Hexagon, Shape.Diamond };
 
-	// Use this for initialization
-	void Start () {      
-	}
+    protected SpriteRenderer sprite;
+
+    protected virtual void Start() {
+        sprite = GetComponent<SpriteRenderer>();
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -21,6 +24,9 @@ public class Block : MonoBehaviour {
     public void Randomize() { 
         color = colors[Random.Range(0, colors.Length)];
         shape = shapes[Random.Range(0, shapes.Length)];
+
+        renderer.material.color = color;
+        
     }
 
     public bool ShareColor(Block other)
@@ -37,11 +43,12 @@ public class Block : MonoBehaviour {
         return (shape == other.shape || color == other.color);
     }
 
-    public static bool operator ==(Block first, Block second) {
-        return (first.shape == second.shape && first.color == second.color);
-    }
-    public static bool operator !=(Block first, Block second)
-    {
-        return (first.shape == second.shape && first.color == second.color);         
-    }
+    //public static bool operator ==(Block first, Block second) {
+    //    if (first == null || second == null) return true;
+    //    return (first.shape == second.shape && first.color == second.color);
+    //}
+    //public static bool operator !=(Block first, Block second)
+    //{        
+    //    return (first.shape == second.shape && first.color == second.color);         
+    //}
 }
