@@ -11,13 +11,13 @@ public class BlockSpawner : MonoBehaviour {
     public int phase;
     public float timeBetweenRows = 1f;
     private float timeSinceSpawned;
-    private float blockSpeed = 5f;
+    private float blockSpeed = 2f;
     public int blocksInRow;
     private float trackWidth;    
 
     private List<Track> tracks; 
     private List<GameObject> blockObjects = new List<GameObject>();
-    private List<Block> blockScripts = new List<Block>();
+    private List<SpawnedBlock> blockScripts = new List<SpawnedBlock>();
 
     private void Awake() {        
         GenerateBlockPool();        
@@ -72,7 +72,7 @@ public class BlockSpawner : MonoBehaviour {
         if (blockObjects.Count != blockScripts.Count) Debug.Log("Lists differ from each other");
         GameObject clone = Instantiate(block, Vector3.zero, Quaternion.identity) as GameObject;
         blockObjects.Add(clone);
-        blockScripts.Add(clone.GetComponent<Block>());
+        blockScripts.Add(clone.GetComponent<SpawnedBlock>());
         clone.SetActive(false);
         return clone;
     }

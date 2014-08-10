@@ -1,8 +1,9 @@
 fileFormatVersion: 2
-guid: 3fe938e2f6040d34f8c5729a5145d47b
+guid: b42f6f43c6b390948a1660e041bcdc8b
 TextureImporter:
   fileIDToRecycleName:
-    21300000: kuva
+    21300000: e
+    21300002: Hexagon
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0

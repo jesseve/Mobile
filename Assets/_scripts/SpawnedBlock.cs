@@ -3,12 +3,14 @@ using System.Collections;
 
 public class SpawnedBlock : Block {
 
+    public bool used;
+
     private BlockSpawner spawner;
 
     // Use this for initialization
-    protected override void Start()
+    protected override void Awake()
     {
-        base.Start();
+        base.Awake();
         spawner = GameObject.FindGameObjectWithTag("Spawner").GetComponent<BlockSpawner>();
     }
 	

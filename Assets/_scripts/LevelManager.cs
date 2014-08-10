@@ -58,4 +58,19 @@ public class LevelManager : GameManager {
 
         instance = this;
     }
+
+    public void Pause() {
+        if (GetState() == State.Running) {
+            SetState(State.Pause);
+            Time.timeScale = 0;
+        }
+        else if (GetState() == State.Pause) {
+            SetState(State.Running);
+            Time.timeScale = 1;
+        }
+    }
+
+    public void GameOver() { 
+    
+    }
 }

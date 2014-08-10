@@ -14,7 +14,11 @@ public class InputManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+        if (Input.GetKeyDown(KeyCode.Escape))
+            LevelManager.instance.Pause();
+        
         int direction = 0;
+        
         if (Input.GetMouseButton(0)) {
             direction = Input.mousePosition.x >= Screen.width * 0.5f ? 1 : -1;            
         }

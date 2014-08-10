@@ -2,17 +2,18 @@
 using System.Collections;
 using System.Collections.Generic;
 
+[RequireComponent(typeof(SpriteRenderer))]
 public class Block : MonoBehaviour {
 
-    public bool used;
     public Shape shape;
     public Color color;
+    public Sprite[] sprites;
     public static Color[] colors = { Color.red, Color.blue, Color.green, Color.yellow, Color.cyan };
     public static Shape[] shapes = { Shape.Circle, Shape.Square, Shape.Triangle, Shape.Hexagon, Shape.Diamond };
 
     protected SpriteRenderer sprite;
 
-    protected virtual void Start() {
+    protected virtual void Awake() {
         sprite = GetComponent<SpriteRenderer>();
     }
 	
@@ -25,8 +26,21 @@ public class Block : MonoBehaviour {
         color = colors[Random.Range(0, colors.Length)];
         shape = shapes[Random.Range(0, shapes.Length)];
 
-        renderer.material.color = color;
-        
+        SetShape();
+    }
+
+    protected void SetShape() {
+        sprite.sprite = GetSprite();
+        sprite.color = color;
+    }
+
+    protected Sprite GetSprite() {
+        for (int i = 0; i < sprites.Length; i++)
+        {
+            if (sprites[i].texture.name == shape.ToString())
+                return sprites[i];
+        }
+        return sprites[0];
     }
 
     public bool ShareColor(Block other)
@@ -43,12 +57,9 @@ public class Block : MonoBehaviour {
         return (shape == other.shape || color == other.color);
     }
 
-    //public static bool operator ==(Block first, Block second) {
-    //    if (first == null || second == null) return true;
-    //    return (first.shape == second.shape && first.color == second.color);
-    //}
-    //public static bool operator !=(Block first, Block second)
-    //{        
-    //    return (first.shape == second.shape && first.color == second.color);         
-    //}
+    public bool ShareColorAndShape(Block other)
+    {
+        return (shape == other.shape && color == other.color);
+    }
+
 }
