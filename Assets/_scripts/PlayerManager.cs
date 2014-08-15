@@ -4,15 +4,24 @@ using System.Collections;
 public class PlayerManager : Block {
 
     public int maxHits;
-
+    
+    public int score;
+    public int combo;
+    public int health {
+        get {
+            return maxHits - hitsTaken;
+        }
+    }
     private Movement movement;
-    private int hitsTaken;    
+    private int hitsTaken;
+    public ParticleSystem particles;
 
 	// Use this for initialization
-	protected virtual void Awake () {
-        base.Awake();
+	protected virtual void Start () {
+        base.Start();
         movement = GetComponent<Movement>();
         hitsTaken = 0;
+        particles.renderer.sortingLayerName = sprite.sortingLayerName;
         Randomize();
 	}
 	
@@ -27,6 +36,8 @@ public class PlayerManager : Block {
         if (ShareColorOrShape(blockScript)) {
             shape = blockScript.shape;
             color = blockScript.color;
+            combo++;
+            score++;
             SetShape();
         }
         else
@@ -40,9 +51,17 @@ public class PlayerManager : Block {
     }
 
     private void TakeDamage() {
+        combo = 0;
+        EmitParticles();
         hitsTaken++;
         if (hitsTaken >= maxHits) {
             LevelManager.instance.GameOver();
         }
+    }
+
+    private void EmitParticles() {
+        particles.startColor = color;
+        particles.Emit(15);
+
     }
 }

@@ -13,8 +13,10 @@ public class Block : MonoBehaviour {
 
     protected SpriteRenderer sprite;
 
-    protected virtual void Awake() {
+    protected virtual void Start() {
         sprite = GetComponent<SpriteRenderer>();
+        float track = LevelManager.instance.trackWidth;        
+        transform.localScale = new Vector3(track, track, 1f) * 0.5f;
     }
 	
 	// Update is called once per frame

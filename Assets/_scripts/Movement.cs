@@ -6,10 +6,13 @@ public class Movement : MonoBehaviour {
     public float speed;
 
     private Vector2 velocity;
+    private float gameAreaWidth;
 
 	// Use this for initialization
 	void Start () {
         velocity = new Vector3(speed, 0);
+        gameAreaWidth = LevelManager.instance.GameAreaWidthHalf;
+        gameAreaWidth -= transform.localScale.x * .5f;
 	}
 
     /// <summary>
@@ -19,7 +22,7 @@ public class Movement : MonoBehaviour {
     public void MoveHorizontally(int direction) {
         Vector3 position = transform.position;
         float x = position.x;
-        position.x = Mathf.Clamp(position.x, -LevelManager.instance.GameAreaWidthHalf, LevelManager.instance.GameAreaWidthHalf);
+        position.x = Mathf.Clamp(position.x, -gameAreaWidth, gameAreaWidth);
         if (position.x == x || CheckDirection(direction))
         {
             rigidbody2D.velocity = velocity * direction;
@@ -32,7 +35,7 @@ public class Movement : MonoBehaviour {
 
 
     /// <summary>
-    /// Check if the direction is away from the gamearea borders
+    /// Check if the direction is away from the gamearea borders when player is next to the border
     /// </summary>
     /// <param name="direction"></param>
     /// <returns></returns>

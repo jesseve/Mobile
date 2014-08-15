@@ -11,15 +11,17 @@ public class BlockSpawner : MonoBehaviour {
     public int phase;
     public float timeBetweenRows = 1f;
     private float timeSinceSpawned;
-    private float blockSpeed = 2f;
-    public int blocksInRow;
-    private float trackWidth;    
+    public float blockSpeed = 2f;
+    public int blocksInRowMin;
+    public int blocksInRowMax;
+    public float trackWidth;    
 
     private List<Track> tracks; 
     private List<GameObject> blockObjects = new List<GameObject>();
     private List<SpawnedBlock> blockScripts = new List<SpawnedBlock>();
 
-    private void Awake() {        
+    public void Init() {       
+ 
         GenerateBlockPool();        
         SetupSpawner();        
     }
@@ -27,14 +29,17 @@ public class BlockSpawner : MonoBehaviour {
     private void Update() {        
         if (Time.time - timeSinceSpawned > timeBetweenRows) {
             timeSinceSpawned = Time.time;
+            timeBetweenRows = Random.Range(0.9f, 1.8f);
             SpawnRow();
             ReleaseTracks();
         }
     }
 
     private void ChangePhase() {
-        if (blocksInRow < tracksCount)
-            blocksInRow++;
+        if (blocksInRowMax < tracksCount - 1) {
+            blocksInRowMax++;
+            blocksInRowMin = blocksInRowMax / 2;
+        }
     }
 
     #region Block_Methods
@@ -46,7 +51,8 @@ public class BlockSpawner : MonoBehaviour {
     }
 
     private void SpawnRow() {
-        for (int i = 0; i < blocksInRow; i++) {
+        int blocksAmount = Random.Range(blocksInRowMin, blocksInRowMax);
+        for (int i = 0; i < blocksAmount; i++) {
             SpawnBlock();
         }
     }
@@ -73,7 +79,7 @@ public class BlockSpawner : MonoBehaviour {
         GameObject clone = Instantiate(block, Vector3.zero, Quaternion.identity) as GameObject;
         blockObjects.Add(clone);
         blockScripts.Add(clone.GetComponent<SpawnedBlock>());
-        clone.SetActive(false);
+        //clone.SetActive(false);
         return clone;
     }
 
