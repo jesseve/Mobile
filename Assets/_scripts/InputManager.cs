@@ -22,7 +22,8 @@ public class InputManager : MonoBehaviour {
         int direction = 0;
         
         if (Input.GetMouseButton(0)) {
-            direction = Input.mousePosition.x >= Screen.width * 0.5f ? 1 : -1;            
+            //direction = Input.mousePosition.x >= Screen.width * 0.5f ? 1 : -1;            
+            direction = Camera.main.ScreenToWorldPoint(Input.mousePosition).x > transform.position.x ? 1 : -1;
         }
 
         manager.MoveHorizontally(direction);

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class PlayerManager : Block {
 
@@ -12,6 +13,21 @@ public class PlayerManager : Block {
             return maxHits - hitsTaken;
         }
     }
+    public int Money
+    {
+        get {
+            return money;
+        }
+
+        set
+        {
+            if (value < 9999999)
+                money = value;
+            else
+                money = 9999999;
+        }
+    }
+    private int money;
     private Movement movement;
     private int hitsTaken;
     public ParticleSystem particles;
@@ -23,6 +39,8 @@ public class PlayerManager : Block {
         hitsTaken = 0;
         particles.renderer.sortingLayerName = sprite.sortingLayerName;
         Randomize();
+        if(PlayerPrefs.HasKey("PlayerMoney"))
+            Money = PlayerPrefs.GetInt("PlayerMoney");
 	}
 	
 	// Update is called once per frame
@@ -38,7 +56,7 @@ public class PlayerManager : Block {
             shape = blockScript.shape;
             color = blockScript.color;
             combo++;
-            score++;
+            score += 100;
             SetShape();
         }
         else
@@ -56,8 +74,12 @@ public class PlayerManager : Block {
         EmitParticles();
         hitsTaken++;
         if (hitsTaken >= maxHits) {
-            LevelManager.instance.GameOver();
+            StartCoroutine(LevelManager.instance.GameOver());
         }
+    }
+
+    public void AddMoney(int money) {
+        this.Money += money;
     }
 
     public void Reset() {
@@ -66,9 +88,13 @@ public class PlayerManager : Block {
         score = combo = hitsTaken = 0;        
     }
 
+    public void Save() {
+        PlayerPrefs.SetInt("PlayerMoney", money);
+    }
+    
     private void EmitParticles() {
         particles.startColor = color;
         particles.Emit(15);
-
     }
+    
 }

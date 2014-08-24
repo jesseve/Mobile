@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class LevelManager : GameManager {
 
@@ -86,8 +87,16 @@ public class LevelManager : GameManager {
         }
     }
 
-    public void GameOver() {
-        SetState(State.GameOver);
+    public IEnumerator GameOver() {
+        SetState(State.GameOver);        
+        int score = player.score / 100;
+        player.AddMoney(player.score);
+        yield return new WaitForSeconds(2f);
+        while (player.score > 0) {            
+            player.score -= score;
+            yield return new WaitForSeconds(0.01f);
+        }        
+        player.Reset();
         scoreGUI.SetActive(false);
         pauseGUI.SetActive(false);
         menuGUI.SetActive(true);
