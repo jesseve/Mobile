@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class GUIManager : MonoBehaviour {
 
-    public GUIText score;
-    public GUIText combo;
-    public GUIText health;
+    public Text score;
+    public Text combo;
+    public Text health;
     private PlayerManager player;
 
 
@@ -16,6 +17,7 @@ public class GUIManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        if (LevelManager.instance.GetState() != State.Running) return;
         score.text = player.score.ToString();
         combo.text = player.combo.ToString();
         health.text = player.health.ToString();

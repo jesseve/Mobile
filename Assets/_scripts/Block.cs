@@ -4,19 +4,23 @@ using System.Collections.Generic;
 
 [RequireComponent(typeof(SpriteRenderer))]
 public class Block : MonoBehaviour {
-
+  
     public Shape shape;
     public Color color;
     public Sprite[] sprites;
-    public static Color[] colors = { Color.red, Color.blue, Color.green, Color.yellow, Color.cyan };
+    public static Color[] colors = { Color.red, Color.blue, Color.green, Color.yellow, Color.red + Color.blue };
     public static Shape[] shapes = { Shape.Circle, Shape.Square, Shape.Triangle, Shape.Hexagon, Shape.Diamond };
 
     protected SpriteRenderer sprite;
 
     protected virtual void Start() {
-        sprite = GetComponent<SpriteRenderer>();
-        float track = LevelManager.instance.trackWidth;        
+        SetSpriteRenderer();
+        float track = LevelManager.instance.trackWidth; //GameObject.FindGameObjectWithTag("Spawner").GetComponent<BlockSpawner>().trackWidth;       
         transform.localScale = new Vector3(track, track, 1f) * 0.5f;
+    }
+
+    protected void SetSpriteRenderer() {
+        sprite = GetComponent<SpriteRenderer>();
     }
 	
 	// Update is called once per frame
@@ -27,7 +31,7 @@ public class Block : MonoBehaviour {
     public void Randomize() { 
         color = colors[Random.Range(0, colors.Length)];
         shape = shapes[Random.Range(0, shapes.Length)];
-
+        if (sprite == null) SetSpriteRenderer();
         SetShape();
     }
 

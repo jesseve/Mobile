@@ -4,8 +4,9 @@ using System.Collections;
 public class Movement : MonoBehaviour {
 
     public float speed;
-
+    public float accelerateSpeed = 0.02f;
     private Vector2 velocity;
+    private float acceleration;
     private float gameAreaWidth;
 
 	// Use this for initialization
@@ -13,6 +14,7 @@ public class Movement : MonoBehaviour {
         velocity = new Vector3(speed, 0);
         gameAreaWidth = LevelManager.instance.GameAreaWidthHalf;
         gameAreaWidth -= transform.localScale.x * .5f;
+        acceleration = 0;
 	}
 
     /// <summary>
@@ -25,10 +27,14 @@ public class Movement : MonoBehaviour {
         position.x = Mathf.Clamp(position.x, -gameAreaWidth, gameAreaWidth);
         if (position.x == x || CheckDirection(direction))
         {
-            rigidbody2D.velocity = velocity * direction;
+            if (direction == 0)
+                acceleration = 0;
+            acceleration = acceleration < 1 ? acceleration + accelerateSpeed : 1;
+            rigidbody2D.velocity = velocity * direction * acceleration;
         }
         else 
         {
+            acceleration = 0;
             rigidbody2D.velocity = Vector2.zero;
         }
     }
@@ -41,7 +47,7 @@ public class Movement : MonoBehaviour {
     /// <returns></returns>
     private bool CheckDirection(int direction) 
     {
-        if (Mathf.Sign(direction) != Mathf.Sign(transform.position.x))
+        if (Mathf.Sign(direction) != Mathf.Sign(transform.position.x) && direction != 0)
             return true;
         return false;
     }

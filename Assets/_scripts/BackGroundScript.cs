@@ -7,12 +7,10 @@ public class BackGroundScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        sprite = GetComponent<SpriteRenderer>().sprite;     
-        Vector2 extents = sprite.bounds.extents * 2f;
-        float ratio = extents.x / extents.y;        
+        float height = (Camera.main.ScreenToWorldPoint(Vector3.up * Screen.height).y - Camera.main.ScreenToWorldPoint(Vector3.zero).y);  
         float area = LevelManager.instance.GameAreaWidth;
-        float newScaleY = area / extents.y;
-        float newScaleX = newScaleY * ratio; ;
+        float newScaleX = area;
+        float newScaleY = height;
         transform.localScale = new Vector3(newScaleX, newScaleY);
 	}
 	

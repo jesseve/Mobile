@@ -33,28 +33,35 @@ public class LevelManager : GameManager {
 
     public int gamePhase;
 
+    private PlayerManager player;
+    public GameObject scoreGUI;
+    public GameObject pauseGUI;
+    public GameObject menuGUI;
     public float timeBetweenPhases;
     private float phaseStartTime;
+    private BlockSpawner spawner;
+
 
     public override void Awake()
     {
         base.Awake();        
         gameAreaWidth = (Camera.main.ScreenToWorldPoint(Vector3.right * Screen.width).x - Camera.main.ScreenToWorldPoint(Vector3.zero).x) * (100f - borderPanelWidth * 2f) * 0.01f; 
         gameAreaWidthHalf = gameAreaWidth * 0.5f;
-        Debug.Log(gameAreaWidth);        
-
-        BlockSpawner spawner = GameObject.FindGameObjectWithTag("Spawner").GetComponent<BlockSpawner>();
+        spawner = GameObject.FindGameObjectWithTag("Spawner").GetComponent<BlockSpawner>();
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerManager>();
         spawner.Init();
-        trackWidth = spawner.trackWidth;        
-
-        phaseStartTime = Time.time;
+        trackWidth = spawner.trackWidth;
+        //StartGame();
+        
     }
 
     private void Update() {
+        if (GetState() != State.Running) return;
         if (Time.time - phaseStartTime > timeBetweenPhases) {
             gamePhase++;
             phaseStartTime = Time.time;
-            changePhase();
+            if(changePhase != null)
+                changePhase();
         }
     }
 
@@ -69,15 +76,36 @@ public class LevelManager : GameManager {
     public void Pause() {
         if (GetState() == State.Running) {
             SetState(State.Pause);
+            pauseGUI.SetActive(true);
             Time.timeScale = 0;
         }
         else if (GetState() == State.Pause) {
             SetState(State.Running);
+            pauseGUI.SetActive(false);
             Time.timeScale = 1;
         }
     }
 
     public void GameOver() {
-        Application.LoadLevel(Application.loadedLevel);
+        SetState(State.GameOver);
+        scoreGUI.SetActive(false);
+        pauseGUI.SetActive(false);
+        menuGUI.SetActive(true);
     }
+
+    public void StartGame() {
+        spawner.Init();
+        player.Reset();
+        scoreGUI.SetActive(true);
+        menuGUI.SetActive(false);
+        SetState(State.Running);
+        phaseStartTime = Time.time;
+        gamePhase = 0;
+        Time.timeScale = 1f;
+    }
+
+    public void Quit() {
+        Application.Quit();
+    }
+
 }

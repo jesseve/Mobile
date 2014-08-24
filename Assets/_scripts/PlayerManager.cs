@@ -31,6 +31,7 @@ public class PlayerManager : Block {
 	}
 
     void OnTriggerEnter2D(Collider2D other) {
+        if (LevelManager.instance.GetState() != State.Running) return;
         SpawnedBlock blockScript = other.GetComponent<SpawnedBlock>();
         if (blockScript == null) return;
         if (ShareColorOrShape(blockScript)) {
@@ -57,6 +58,12 @@ public class PlayerManager : Block {
         if (hitsTaken >= maxHits) {
             LevelManager.instance.GameOver();
         }
+    }
+
+    public void Reset() {
+        transform.position = Vector3.zero;
+        rigidbody2D.velocity = Vector2.zero;
+        score = combo = hitsTaken = 0;        
     }
 
     private void EmitParticles() {

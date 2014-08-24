@@ -16,7 +16,9 @@ public class InputManager : MonoBehaviour {
 
         if (Input.GetKeyDown(KeyCode.Escape))
             LevelManager.instance.Pause();
-        
+
+        if (LevelManager.instance.GetState() != State.Running) return;
+
         int direction = 0;
         
         if (Input.GetMouseButton(0)) {

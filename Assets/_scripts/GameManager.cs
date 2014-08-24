@@ -97,7 +97,8 @@ public enum State
 {
     Menu,
     Pause,
-    Running    
+    Running,    
+    GameOver
 }
 public enum RunningState
 { 

@@ -14,41 +14,61 @@ public class BlockSpawner : MonoBehaviour {
     public float blockSpeed = 2f;
     public int blocksInRowMin;
     public int blocksInRowMax;
-    public float trackWidth;    
+    public float trackWidth;
+
+    private float timeBetweenRowsMin = 1f;
+    private float timeBetweenRowsMax = 2f;
 
     private List<Track> tracks; 
     private List<GameObject> blockObjects = new List<GameObject>();
     private List<SpawnedBlock> blockScripts = new List<SpawnedBlock>();
 
-    public void Init() {       
- 
+    private void Awake() {
+        //Init();
+    }
+
+    public void Init() {
+        print("init");
         GenerateBlockPool();        
-        SetupSpawner();        
+        SetupSpawner();
+        ResetSpawner();
+    }
+
+    private void OnEnable() {
+        LevelManager.instance.changePhase += ChangePhase;
+    }
+
+    private void OnDisable() {
+        LevelManager.instance.changePhase -= ChangePhase;
     }
 
     private void Update() {        
         if (Time.time - timeSinceSpawned > timeBetweenRows) {
             timeSinceSpawned = Time.time;
-            timeBetweenRows = Random.Range(0.9f, 1.8f);
+            timeBetweenRows = Random.Range(timeBetweenRowsMin, timeBetweenRowsMax);
             SpawnRow();
             ReleaseTracks();
         }
     }
 
     private void ChangePhase() {
-        if (blocksInRowMax < tracksCount - 1) {
-            blocksInRowMax++;
-            blocksInRowMin = blocksInRowMax / 2;
+        phase = LevelManager.instance.gamePhase;
+        if (blocksInRowMin < tracksCount - 4 && phase % 2 == 0) {
+            blocksInRowMin++;
+        }
+        if (blocksInRowMax < tracksCount - 1) {            
+            blocksInRowMax++;            
+        }
+        if (phase % 3 == 0 && blockSpeed < 8f) {
+            if (timeBetweenRowsMin > 0.5f) {
+                timeBetweenRowsMin -= 0.1f;
+                timeBetweenRowsMax -= 0.15f;
+            }
+            blockSpeed += 0.2f;
         }
     }
 
-    #region Block_Methods
-    public void ReturnBlock(GameObject block) {
-        int index = blockObjects.IndexOf(block);
-        blockObjects[index].rigidbody2D.velocity = Vector2.zero;
-        blockScripts[index].used = false;
-        blockObjects[index].SetActive(false);
-    }
+    #region Block_Methods    
 
     private void SpawnRow() {
         int blocksAmount = Random.Range(blocksInRowMin, blocksInRowMax);
@@ -60,17 +80,14 @@ public class BlockSpawner : MonoBehaviour {
     private void SpawnBlock()
     {
         GameObject clone = GetFreeBlock();
-        int index = blockObjects.IndexOf(clone);
-        blockScripts[index].Randomize();
+        int index = blockObjects.IndexOf(clone);        
         PlaceBlock(index);
     }
 
     private void PlaceBlock(int index) {
         Track t = GetFreeRandomTrack();
         if (t == null) return;
-        blockObjects[index].transform.position = t.position;
-        blockObjects[index].SetActive(true);
-        blockObjects[index].rigidbody2D.velocity = -Vector2.up * blockSpeed;
+        blockScripts[index].Launch(blockSpeed, t.position);
     }
 
     private GameObject AddBlock()
@@ -78,16 +95,18 @@ public class BlockSpawner : MonoBehaviour {
         if (blockObjects.Count != blockScripts.Count) Debug.Log("Lists differ from each other");
         GameObject clone = Instantiate(block, Vector3.zero, Quaternion.identity) as GameObject;
         blockObjects.Add(clone);
-        blockScripts.Add(clone.GetComponent<SpawnedBlock>());
-        //clone.SetActive(false);
+        SpawnedBlock scriptClone = clone.GetComponent<SpawnedBlock>();
+        blockScripts.Add(scriptClone);
+        scriptClone.SetSpawner(this);
+        scriptClone.ReturnToSpawner();
         return clone;
     }
 
     private GameObject GetFreeBlock() {
-        for (int i = 0; i < maxBlocks; i++) {
+        for (int i = 0; i < blockObjects.Count; i++) {
             if (!blockScripts[i].used) {
-                blockScripts[i].used = true;
-                blockObjects[i].SetActive(true);
+                //blockScripts[i].used = true;
+                //blockObjects[i].SetActive(true);
                 return blockObjects[i];
             }
         }
@@ -98,6 +117,7 @@ public class BlockSpawner : MonoBehaviour {
 
     #region Init_Methods
     private void GenerateBlockPool() {
+        if (blockObjects.Count >= maxBlocks) return;
         for (int i = 0; i < maxBlocks; i++){
             AddBlock();                       
         }
@@ -113,10 +133,21 @@ public class BlockSpawner : MonoBehaviour {
             else
                 trackPositions[i] = trackPositions[i - 1] + new Vector3(trackWidth, 0);
             tracks.Add(new Track(trackPositions[i]));
-            //Instantiate(block, trackPositions[i], Quaternion.identity);
         }
-        LevelManager.instance.changePhase += ChangePhase;
         timeSinceSpawned = Time.time;
+    }
+
+    private void ResetBlocks() { 
+        for(int i = 0; i < blockScripts.Count; i++) {
+            if (blockObjects[i].activeSelf)
+                blockScripts[i].ReturnToSpawner();
+        }
+    }
+
+    public void ResetSpawner() {
+        ResetBlocks();
+        timeBetweenRowsMin = 1f;
+        timeBetweenRowsMax = 2f;
     }
 
     #endregion
