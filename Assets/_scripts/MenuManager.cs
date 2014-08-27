@@ -1,19 +1,19 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
-public class MenuManager : GameManager {
+public class MenuManager : MonoBehaviour {
 
-    public static MenuManager instance
-    {
-        get;
-        private set;
-    }    
+    public Text money;
 
-    protected override void SetupManager()
-    {
-        if (instance != null)
-            Destroy(instance);
+    private PlayerManager player;
 
-        instance = this;
+    void Start() {
+        money = GetComponent<Text>();
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerManager>();
+    }
+
+    void Update() {
+        money.text = player.Money.ToString();
     }
 }

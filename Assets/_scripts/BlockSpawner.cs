@@ -28,7 +28,6 @@ public class BlockSpawner : MonoBehaviour {
     }
 
     public void Init() {
-        print("init");
         GenerateBlockPool();        
         SetupSpawner();
         ResetSpawner();

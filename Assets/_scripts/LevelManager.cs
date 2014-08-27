@@ -38,6 +38,10 @@ public class LevelManager : GameManager {
     public GameObject scoreGUI;
     public GameObject pauseGUI;
     public GameObject menuGUI;
+    public GameObject gameOverGUI;
+    public int money;
+    public int score;
+    public int highestCombo;
     public float timeBetweenPhases;
     private float phaseStartTime;
     private BlockSpawner spawner;
@@ -52,6 +56,7 @@ public class LevelManager : GameManager {
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerManager>();
         spawner.Init();
         trackWidth = spawner.trackWidth;
+        SetGUI(menuGUI);
         //StartGame();
         
     }
@@ -85,28 +90,41 @@ public class LevelManager : GameManager {
             pauseGUI.SetActive(false);
             Time.timeScale = 1;
         }
+    }     
+
+    public void GameOver() {
+        SetState(State.Menu);
+        SetGUI(menuGUI);
     }
 
-    public IEnumerator GameOver() {
-        SetState(State.GameOver);        
-        int score = player.score / 100;
+    public IEnumerator GameOverCalculator() {
+        SetState(State.GameOver);
+        money = 0;
         player.AddMoney(player.score);
-        yield return new WaitForSeconds(2f);
-        while (player.score > 0) {            
-            player.score -= score;
-            yield return new WaitForSeconds(0.01f);
-        }        
+        player.Save();
+        score = player.score;
+        highestCombo = player.highestCombo;
+        int originalScore = score;
+        int scoreToSubstract = score / 200 + 10;
         player.Reset();
-        scoreGUI.SetActive(false);
-        pauseGUI.SetActive(false);
-        menuGUI.SetActive(true);
+        SetGUI(gameOverGUI);
+        yield return new WaitForSeconds(2f);
+        while (score > 0) {            
+            score -= scoreToSubstract;
+            money += scoreToSubstract;
+            if (money >= originalScore)
+                money = originalScore;
+            yield return null;
+        }
+        score = 0;
+        yield return new WaitForSeconds(4f);
+        SetGUI(menuGUI);
     }
 
     public void StartGame() {
         spawner.Init();
         player.Reset();
-        scoreGUI.SetActive(true);
-        menuGUI.SetActive(false);
+        SetGUI(scoreGUI);
         SetState(State.Running);
         phaseStartTime = Time.time;
         gamePhase = 0;
@@ -114,7 +132,16 @@ public class LevelManager : GameManager {
     }
 
     public void Quit() {
+        player.Save();
         Application.Quit();
+    }
+
+    private void SetGUI(GameObject gui) {
+        scoreGUI.SetActive(false);
+        pauseGUI.SetActive(false);
+        menuGUI.SetActive(false);
+        gameOverGUI.SetActive(false);
+        gui.SetActive(true);
     }
 
 }

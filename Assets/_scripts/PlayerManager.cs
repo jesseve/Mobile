@@ -28,6 +28,7 @@ public class PlayerManager : Block {
         }
     }
     private int money;
+    public int highestCombo;
     private Movement movement;
     private int hitsTaken;
     public ParticleSystem particles;
@@ -70,11 +71,13 @@ public class PlayerManager : Block {
     }
 
     private void TakeDamage() {
+        if (combo > highestCombo)
+            highestCombo = combo;
         combo = 0;
         EmitParticles();
         hitsTaken++;
         if (hitsTaken >= maxHits) {
-            StartCoroutine(LevelManager.instance.GameOver());
+            StartCoroutine(LevelManager.instance.GameOverCalculator());
         }
     }
 
@@ -85,7 +88,7 @@ public class PlayerManager : Block {
     public void Reset() {
         transform.position = Vector3.zero;
         rigidbody2D.velocity = Vector2.zero;
-        score = combo = hitsTaken = 0;        
+        score = combo = hitsTaken = highestCombo = 0;        
     }
 
     public void Save() {
@@ -94,7 +97,7 @@ public class PlayerManager : Block {
     
     private void EmitParticles() {
         particles.startColor = color;
-        particles.Emit(15);
+        particles.Play();
     }
     
 }

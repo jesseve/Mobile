@@ -1,8 +1,9 @@
 fileFormatVersion: 2
-guid: d7543e2262e090545988b6c5548aac8b
+guid: 2b4b391d5c1664f40a594712c223e9bf
 TextureImporter:
   fileIDToRecycleName:
-    21300000: Triangle
+    21300000: _0004s_0000_Diamond
+    21300002: Triangle
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -23,7 +24,7 @@ TextureImporter:
   generateCubemap: 0
   seamlessCubemap: 0
   textureFormat: -1
-  maxTextureSize: 2048
+  maxTextureSize: 1024
   textureSettings:
     filterMode: -1
     aniso: 1
@@ -38,7 +39,7 @@ TextureImporter:
   alignment: 0
   spritePivot: {x: .5, y: .5}
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
-  spritePixelsToUnits: 64
+  spritePixelsToUnits: 370
   alphaIsTransparency: 1
   textureType: 8
   buildTargetSettings: []

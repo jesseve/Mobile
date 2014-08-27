@@ -1,8 +1,8 @@
 fileFormatVersion: 2
-guid: 3fe938e2f6040d34f8c5729a5145d47b
+guid: 8d593d8d2a6dddb4bb12e9f19723a327
 TextureImporter:
   fileIDToRecycleName:
-    21300000: kuva
+    21300000: _0003s_0000_Diamond
     21300002: Square
   serializedVersion: 2
   mipmaps:
@@ -24,7 +24,7 @@ TextureImporter:
   generateCubemap: 0
   seamlessCubemap: 0
   textureFormat: -1
-  maxTextureSize: 2048
+  maxTextureSize: 1024
   textureSettings:
     filterMode: -1
     aniso: 1
@@ -39,7 +39,7 @@ TextureImporter:
   alignment: 0
   spritePivot: {x: .5, y: .5}
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
-  spritePixelsToUnits: 64
+  spritePixelsToUnits: 370
   alphaIsTransparency: 1
   textureType: 8
   buildTargetSettings: []

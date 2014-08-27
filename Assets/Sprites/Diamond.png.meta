@@ -1,8 +1,9 @@
 fileFormatVersion: 2
-guid: e3755b00f88379f439d28b0e162d8bac
+guid: b4c02de8d4f754345a20d0aa51f75458
 TextureImporter:
   fileIDToRecycleName:
-    21300000: Diamond
+    21300000: _0001s_0000_Diamond
+    21300002: Diamond
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -23,7 +24,7 @@ TextureImporter:
   generateCubemap: 0
   seamlessCubemap: 0
   textureFormat: -1
-  maxTextureSize: 2048
+  maxTextureSize: 1024
   textureSettings:
     filterMode: -1
     aniso: 1
@@ -38,7 +39,7 @@ TextureImporter:
   alignment: 0
   spritePivot: {x: .5, y: .5}
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
-  spritePixelsToUnits: 64
+  spritePixelsToUnits: 370
   alphaIsTransparency: 1
   textureType: 8
   buildTargetSettings: []
