@@ -61,7 +61,7 @@ public class LevelManager : GameManager {
         
     }
 
-    private void Update() {
+    public override void Update() {
         if (GetState() != State.Running) return;
         if (Time.time - phaseStartTime > timeBetweenPhases) {
             gamePhase++;

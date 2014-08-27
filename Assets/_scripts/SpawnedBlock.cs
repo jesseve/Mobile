@@ -5,7 +5,7 @@ public class SpawnedBlock : Block {
 
     public bool used;
 
-    private BlockSpawner spawner;
+//    private BlockSpawner spawner;
     
     void OnTriggerEnter2D(Collider2D other) {
         if (other.CompareTag("Destroyer"))
@@ -13,7 +13,7 @@ public class SpawnedBlock : Block {
     }
 
     public void SetSpawner(BlockSpawner spawner) {
-        this.spawner = spawner;
+        //this.spawner = spawner;
     }
 
     public void ReturnToSpawner()

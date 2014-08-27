@@ -34,7 +34,7 @@ public class PlayerManager : Block {
     public ParticleSystem particles;
 
 	// Use this for initialization
-	protected virtual void Start () {
+	protected override void Start () {
         base.Start();
         movement = GetComponent<Movement>();
         hitsTaken = 0;

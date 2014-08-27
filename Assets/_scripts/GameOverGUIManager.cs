@@ -7,12 +7,10 @@ public class GameOverGUIManager : MonoBehaviour {
     public Text score;
     public Text combo;
     public Text money;
-    private PlayerManager player;
 
 
 	// Use this for initialization
-	void Start () {
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerManager>();
+	void Start () {        
 	}
 	
 	// Update is called once per frame
