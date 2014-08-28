@@ -151,6 +151,7 @@ public class LevelManager : GameManager {
     }
 
     public void ChangeBackground(int i) {
+        print(i);
         backgroundIndex += i;
         if (backgroundIndex >= backgrounds.Length)
             backgroundIndex = 0;
