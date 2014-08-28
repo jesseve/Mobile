@@ -39,12 +39,17 @@ public class LevelManager : GameManager {
     public GameObject pauseGUI;
     public GameObject menuGUI;
     public GameObject gameOverGUI;
+    
+    public Sprite[] backgrounds;
+    private int backgroundIndex;
+
     public int money;
     public int score;
     public int highestCombo;
     public float timeBetweenPhases;
     private float phaseStartTime;
     private BlockSpawner spawner;
+    private BackGroundScript background;
 
 
     public override void Awake()
@@ -54,6 +59,7 @@ public class LevelManager : GameManager {
         gameAreaWidthHalf = gameAreaWidth * 0.5f;
         spawner = GameObject.FindGameObjectWithTag("Spawner").GetComponent<BlockSpawner>();
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerManager>();
+        background = GameObject.FindGameObjectWithTag("Background").GetComponent<BackGroundScript>();
         spawner.Init();
         trackWidth = spawner.trackWidth;
         SetGUI(menuGUI);
@@ -142,6 +148,15 @@ public class LevelManager : GameManager {
         menuGUI.SetActive(false);
         gameOverGUI.SetActive(false);
         gui.SetActive(true);
+    }
+
+    public void ChangeBackground(int i) {
+        backgroundIndex += i;
+        if (backgroundIndex >= backgrounds.Length)
+            backgroundIndex = 0;
+        else if(backgroundIndex < 0)
+            backgroundIndex = backgrounds.Length - 1;
+        background.ChangeBackground(backgrounds[backgroundIndex]);
     }
 
 }
