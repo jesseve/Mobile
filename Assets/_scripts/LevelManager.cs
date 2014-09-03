@@ -39,9 +39,6 @@ public class LevelManager : GameManager {
     public GameObject pauseGUI;
     public GameObject menuGUI;
     public GameObject gameOverGUI;
-    
-    public Sprite[] backgrounds;
-    private int backgroundIndex;
 
     public int money;
     public int score;
@@ -49,7 +46,6 @@ public class LevelManager : GameManager {
     public float timeBetweenPhases;
     private float phaseStartTime;
     private BlockSpawner spawner;
-    private BackGroundScript background;
 
 
     public override void Awake()
@@ -58,8 +54,7 @@ public class LevelManager : GameManager {
         gameAreaWidth = (Camera.main.ScreenToWorldPoint(Vector3.right * Screen.width).x - Camera.main.ScreenToWorldPoint(Vector3.zero).x) * (100f - borderPanelWidth * 2f) * 0.01f; 
         gameAreaWidthHalf = gameAreaWidth * 0.5f;
         spawner = GameObject.FindGameObjectWithTag("Spawner").GetComponent<BlockSpawner>();
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerManager>();
-        background = GameObject.FindGameObjectWithTag("Background").GetComponent<BackGroundScript>();
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerManager>();        
         spawner.Init();
         trackWidth = spawner.trackWidth;
         SetGUI(menuGUI);
@@ -128,10 +123,11 @@ public class LevelManager : GameManager {
     }
 
     public void StartGame() {
+        SetState(State.Running);
         spawner.Init();
         player.Reset();
         SetGUI(scoreGUI);
-        SetState(State.Running);
+        timeBetweenPhases = LevelSelect.instance.currentLevel.timeBetweenPhases;
         phaseStartTime = Time.time;
         gamePhase = 0;
         Time.timeScale = 1f;
@@ -149,15 +145,6 @@ public class LevelManager : GameManager {
         gameOverGUI.SetActive(false);
         gui.SetActive(true);
     }
-
-    public void ChangeBackground(int i) {
-        print(i);
-        backgroundIndex += i;
-        if (backgroundIndex >= backgrounds.Length)
-            backgroundIndex = 0;
-        else if(backgroundIndex < 0)
-            backgroundIndex = backgrounds.Length - 1;
-        background.ChangeBackground(backgrounds[backgroundIndex]);
-    }
+    
 
 }

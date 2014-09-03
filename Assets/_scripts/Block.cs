@@ -34,10 +34,15 @@ public class Block : MonoBehaviour {
 	
 	}
 
+    private void GetLevelValues() {
+        SetShapesAndColorsUsed(LevelSelect.instance.currentLevel.shapeCount, LevelSelect.instance.currentLevel.colorCount);
+    }
+
     public void Randomize() {
+        GetLevelValues();
         color = colors[Random.Range(0, colorsUsed)];
         shape = shapes[Random.Range(0, shapesUsed)];
-        if (sprite == null) SetSpriteRenderer();
+        if (sprite == null) SetSpriteRenderer();        
         SetShape();
     }
 

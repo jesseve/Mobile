@@ -16,7 +16,6 @@ public class GameOverGUIManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         if (LevelManager.instance.GetState() != State.GameOver) return;
-        print("GameOver");
         score.text = LevelManager.instance.score.ToString();
         combo.text = LevelManager.instance.highestCombo.ToString();
         money.text = LevelManager.instance.money.ToString();

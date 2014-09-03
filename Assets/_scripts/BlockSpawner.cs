@@ -11,7 +11,10 @@ public class BlockSpawner : MonoBehaviour {
     public int phase;
     public float timeBetweenRows = 1f;
     private float timeSinceSpawned;
+    
     public float blockSpeed = 2f;
+    private float blockSpeedIncrease;
+
     public int blocksInRowMin;
     public int blocksInRowMax;
     public float trackWidth;
@@ -28,9 +31,12 @@ public class BlockSpawner : MonoBehaviour {
     }
 
     public void Init() {
+        if (LevelManager.instance.GetState() == State.Running) 
+            GetLevelValues();
         GenerateBlockPool();        
         SetupSpawner();
         ResetSpawner();
+        
     }
 
     private void OnEnable() {
@@ -63,7 +69,7 @@ public class BlockSpawner : MonoBehaviour {
                 timeBetweenRowsMin -= 0.1f;
                 timeBetweenRowsMax -= 0.15f;
             }
-            blockSpeed += 0.2f;
+            blockSpeed += blockSpeedIncrease;
         }
     }
 
@@ -134,6 +140,16 @@ public class BlockSpawner : MonoBehaviour {
             tracks.Add(new Track(trackPositions[i]));
         }
         timeSinceSpawned = Time.time;
+    }
+
+    private void GetLevelValues() {         
+        blockSpeed = LevelSelect.instance.currentLevel.blockStartSpeed;
+        blockSpeedIncrease = LevelSelect.instance.currentLevel.blockSpeedIncrease;
+        blocksInRowMin = LevelSelect.instance.currentLevel.blocksInRowMin;
+        blocksInRowMax = LevelSelect.instance.currentLevel.blocksInRowMax;
+        timeBetweenRowsMin = LevelSelect.instance.currentLevel.timeBetweenRowsMin;
+        timeBetweenRowsMax = LevelSelect.instance.currentLevel.timeBetweenRowsMax;
+        tracksCount = LevelSelect.instance.currentLevel.trackCount;
     }
 
     private void ResetBlocks() { 

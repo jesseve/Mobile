@@ -52,9 +52,12 @@
      <Compile Include="Assets\_scripts\DestroyerScript.cs" />
      <Compile Include="Assets\_scripts\GameManager.cs" />
      <Compile Include="Assets\_scripts\GameOverGUIManager.cs" />
+     <Compile Include="Assets\_scripts\HealthBar.cs" />
      <Compile Include="Assets\_scripts\InputManager.cs" />
+     <Compile Include="Assets\_scripts\Level.cs" />
      <Compile Include="Assets\_scripts\LevelManager.cs" />
      <Compile Include="Assets\_scripts\LevelSelect.cs" />
+     <Compile Include="Assets\_scripts\LevelUnlock.cs" />
      <Compile Include="Assets\_scripts\MenuManager.cs" />
      <Compile Include="Assets\_scripts\Movement.cs" />
      <Compile Include="Assets\_scripts\PlayerManager.cs" />

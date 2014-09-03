@@ -31,6 +31,12 @@ public class PlayerManager : Block {
     public int highestCombo;
     private Movement movement;
     private int hitsTaken;
+
+    public HealthBar healthBar;
+
+    private bool takenDamage; //if this is true, player is blinking and can't take damage
+    private float blinkTime = 3f;
+    
     public ParticleSystem particles;
 
 	// Use this for initialization
@@ -39,7 +45,7 @@ public class PlayerManager : Block {
         movement = GetComponent<Movement>();
         hitsTaken = 0;
         particles.renderer.sortingLayerName = sprite.sortingLayerName;
-        Randomize();
+        InitPlayer();
         if(PlayerPrefs.HasKey("PlayerMoney"))
             Money = PlayerPrefs.GetInt("PlayerMoney");
 	}
@@ -59,10 +65,15 @@ public class PlayerManager : Block {
             combo++;
             score += 100;
             SetShape();
+            EmitParticles();
         }
-        else
+        else if(!takenDamage)
             TakeDamage();
         blockScript.ReturnToSpawner();
+    }
+
+    public void InitPlayer() {
+        Randomize();
     }
 
     public void MoveHorizontally(int direction)
@@ -73,12 +84,14 @@ public class PlayerManager : Block {
     private void TakeDamage() {
         if (combo > highestCombo)
             highestCombo = combo;
-        combo = 0;
-        EmitParticles();
+        combo = 0;        
         hitsTaken++;
+        healthBar.ChangeColor();
         if (hitsTaken >= maxHits) {
             StartCoroutine(LevelManager.instance.GameOverCalculator());
         }
+        else
+            StartCoroutine(DamageEffect());
     }
 
     public void AddMoney(int money) {
@@ -99,5 +112,18 @@ public class PlayerManager : Block {
         particles.startColor = color;
         particles.Play();
     }
-    
+
+    private IEnumerator DamageEffect() {
+        takenDamage = true;
+        float blinkStart = Time.time;
+        SpriteRenderer renderer = GetComponent<SpriteRenderer>();      
+        while (blinkStart + blinkTime > Time.time) {
+            color.a = color.a == 0 ? 1f : 0;
+            renderer.color = color;
+            yield return new WaitForSeconds(0.2f);
+        }
+        color.a = 1f;
+        renderer.color = color;
+        takenDamage = false;
+    }
 }
