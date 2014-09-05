@@ -17,6 +17,7 @@ public class BackGroundScript : MonoBehaviour {
     private float levelBottom;
 
     public float scrollingSpeed = -0.2f;
+    private float targetSpeed;
 
 	// Use this for initialization
 	void Start () {
@@ -30,12 +31,16 @@ public class BackGroundScript : MonoBehaviour {
         t2.position = t1.position + Vector3.up * levelHeight;
         startPosition = t2.position;
         endPosition = -t2.position;
+        targetSpeed = scrollingSpeed;
+        scrollingSpeed = 0;
         
 	}
 	
 	// Update is called once per frame
-	void Update () {
-        t1.Translate(0, -scrollingSpeed * Time.deltaTime, 0);       
+	void FixedUpdate () {
+        if (LevelManager.instance.GetState() != State.Running) return;
+        AccelerateScrolling();
+        t1.Translate(0, -scrollingSpeed, 0);       
         if (t1.position.y <= endPosition.y)
             t1.position = startPosition;
         if (t1.position.y >= 0)
@@ -43,6 +48,10 @@ public class BackGroundScript : MonoBehaviour {
         else
             t2.position = t1.position + Vector3.up * levelHeight;
 	}
+
+    void OnEnable() { 
+        LevelManager.instance.changePhase += AddSpeed;
+    }
 
     public void ChangeBackground(Sprite s) {
         sprite1.sprite = s;
@@ -55,4 +64,14 @@ public class BackGroundScript : MonoBehaviour {
         float newScaleY = height / (spriteHeight * 0.01f);
         transform.localScale = new Vector3(newScaleX, newScaleY);
     }
+
+    private void AccelerateScrolling() {       
+        if (Mathf.Abs(scrollingSpeed) < Mathf.Abs(targetSpeed))
+            scrollingSpeed += 0.0001f * Mathf.Sign(targetSpeed);      
+    }
+
+    private void AddSpeed() {
+        targetSpeed += Mathf.Sign(targetSpeed) * 0.001f;
+    }
+
 }

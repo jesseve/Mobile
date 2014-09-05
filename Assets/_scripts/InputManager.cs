@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class InputManager : MonoBehaviour {
 
+    public Button quit;
 
     private PlayerManager manager;
 	
@@ -14,8 +16,19 @@ public class InputManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        if (Input.GetKeyDown(KeyCode.Escape))
-            LevelManager.instance.Pause();
+        if (Input.GetKeyDown(KeyCode.Escape)) {
+            State s = LevelManager.instance.GetState();
+            switch(s){
+                case State.Running: case State.Pause:
+                    LevelManager.instance.Pause();
+                    break;
+                case State.Menu: case State.Confirm:
+                    LevelManager.instance.ConfirmQuit();
+                    break;
+
+
+            }
+        }
 
         if (LevelManager.instance.GetState() != State.Running) return;
 

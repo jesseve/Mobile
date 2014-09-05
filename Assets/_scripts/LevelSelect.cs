@@ -40,11 +40,6 @@ public class LevelSelect : MonoBehaviour {
         background.ChangeBackground(currentLevel.levelSprite);
     }
 	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
     public void InitLevel() { }
 
     public void ChangeLevel(int direction) {

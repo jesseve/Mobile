@@ -74,6 +74,8 @@ public class PlayerManager : Block {
 
     public void InitPlayer() {
         Randomize();
+        Reset();
+        healthBar.Init();
     }
 
     public void MoveHorizontally(int direction)

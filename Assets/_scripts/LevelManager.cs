@@ -63,6 +63,7 @@ public class LevelManager : GameManager {
     }
 
     public override void Update() {
+        print(GetState().ToString());
         if (GetState() != State.Running) return;
         if (Time.time - phaseStartTime > timeBetweenPhases) {
             gamePhase++;
@@ -84,7 +85,10 @@ public class LevelManager : GameManager {
         if (GetState() == State.Running) {
             SetState(State.Pause);
             pauseGUI.SetActive(true);
-            Time.timeScale = 0;
+            pauseGUI.transform.Find("Confirm").gameObject.SetActive(false);
+            pauseGUI.transform.Find("Continue").gameObject.SetActive(true);
+            pauseGUI.transform.Find("QuitGame").gameObject.SetActive(true);
+            Time.timeScale = 0f;
         }
         else if (GetState() == State.Pause) {
             SetState(State.Running);
@@ -119,18 +123,34 @@ public class LevelManager : GameManager {
         }
         score = 0;
         yield return new WaitForSeconds(4f);
+        SetState(State.Menu);
         SetGUI(menuGUI);
     }
 
     public void StartGame() {
         SetState(State.Running);
         spawner.Init();
-        player.Reset();
+        player.InitPlayer();
         SetGUI(scoreGUI);
         timeBetweenPhases = LevelSelect.instance.currentLevel.timeBetweenPhases;
         phaseStartTime = Time.time;
         gamePhase = 0;
         Time.timeScale = 1f;
+    }
+
+    public void ConfirmQuit() {
+        if (GetState() == State.Menu) {
+            SetState(State.Confirm);
+            menuGUI.transform.Find("Confirm").gameObject.SetActive(true);
+            menuGUI.transform.Find("StartGame").gameObject.SetActive(false);
+            menuGUI.transform.Find("QuitGame").gameObject.SetActive(false);
+        }
+        else if (GetState() == State.Confirm) {
+            menuGUI.transform.Find("Confirm").gameObject.SetActive(false);
+            menuGUI.transform.Find("StartGame").gameObject.SetActive(true);
+            menuGUI.transform.Find("QuitGame").gameObject.SetActive(true);
+            SetState(State.Menu);
+        }
     }
 
     public void Quit() {

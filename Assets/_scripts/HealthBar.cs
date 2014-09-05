@@ -10,7 +10,7 @@ public class HealthBar : MonoBehaviour {
     public Image healthBar;
 
 	// Use this for initialization
-	void Start () {
+	void Awake () {
         slider = GetComponent<Slider>();
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerManager>();
         Init();
@@ -18,15 +18,15 @@ public class HealthBar : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        slider.value = player.health - 1;
+        slider.value = player.health;
 	}
 
     public void ChangeColor() {
-        healthBar.color = new Color(1f - (slider.value / slider.maxValue), (slider.value / slider.maxValue), 0);
+        healthBar.color = new Color((1f - (slider.value / slider.maxValue)), (slider.value / slider.maxValue), 0);
     }
 
     public void Init() {        
-        slider.maxValue = player.maxHits - 1;
+        slider.maxValue = player.maxHits;
         slider.value = slider.maxValue;
         ChangeColor();
     }
