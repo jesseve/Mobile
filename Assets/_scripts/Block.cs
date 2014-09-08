@@ -9,7 +9,7 @@ public class Block : MonoBehaviour {
     public Color color;
     public Sprite[] sprites;
     public static Color[] colors = { Color.red, Color.blue, Color.green, Color.yellow, Color.red + Color.blue };
-    public static Shape[] shapes = { Shape.Circle, Shape.Square, Shape.Triangle, Shape.Hexagon, Shape.Diamond };
+    public static Shape[] shapes = { Shape.Circle, Shape.Square, Shape.Triangle, Shape.Hexagon, Shape.Diamond, Shape.Star };
 
 
     protected int colorsUsed = colors.Length;

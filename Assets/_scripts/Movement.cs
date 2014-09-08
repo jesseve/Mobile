@@ -36,7 +36,7 @@ public class Movement : MonoBehaviour {
         {
             acceleration = 0;
             rigidbody2D.velocity = Vector2.zero;
-        }
+        }        
     }
 
 

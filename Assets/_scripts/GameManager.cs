@@ -113,5 +113,6 @@ public enum Shape
     Square,
     Circle,
     Diamond,
-    Hexagon
+    Hexagon,
+    Star
 }
