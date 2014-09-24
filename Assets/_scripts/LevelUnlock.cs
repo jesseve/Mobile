@@ -3,50 +3,62 @@ using UnityEngine.UI;
 using System.Collections;
 
 public class LevelUnlock : MonoBehaviour {
-
-    public Text text;
+    
     public Button button;
+    public PopUpController popup;
     private PlayerManager player;
-
-    private string textStart = "It will cost $";
-    private string textEnd = " to unlock. Unlock?";
 
     private string failedTextStart = "You need to earn $";
     private string failedTextEnd = " to unlock this level";
 
-    public GameObject OKButton;
-    public GameObject YesButton;
-    public GameObject NoButton;
 
-    private bool canUnlock;
+    public bool canUnlock;
+    public bool canStart;
 
+    public Text buttonText;
+    
 	// Use this for initialization
 	void Start () {
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerManager>();
+        player = Initializer.instance.player;
+        LevelSelect.instance.levelChanged += ChangeLevel;
 	}    
 	
 	// Update is called once per frame
 	void Update () {
-        SetInteractable();
-        if (canUnlock)
+        canStart = LevelSelect.instance.currentLevel.unlocked;
+        buttonText.text = canStart ? "Start" : "Unlock";        
+	}
+    
+
+    /// <summary>
+    /// Disable the pop up window when the player pushed the level change arrow buttons
+    /// </summary>
+    private void ChangeLevel() {
+        popup.Stop();
+    }
+
+    /// <summary>
+    /// Decides what happens when the Start/Unlock button is pressed
+    /// If the current level is unlocked, start the game
+    /// if the current level is locked and player has money to unlock it, unlock the level
+    /// if neither is true, show a pop up window that shows how much money is needed to unlock
+    /// </summary>
+    public void Pushed() { 
+        canStart = LevelSelect.instance.currentLevel.unlocked;
+        canUnlock = LevelSelect.instance.currentLevel.costToUnlock <= player.Money;
+        if (canStart)
         {
-            text.text = textStart + LevelSelect.instance.currentLevel.costToUnlock.ToString() + " " + textEnd;
-            YesButton.SetActive(true);
-            NoButton.SetActive(true);
-            OKButton.SetActive(false);
+            LevelManager.instance.StartGame();
+        }
+        else if (canUnlock)
+        {
+            LevelSelect.instance.UnlockLevel();
         }
         else
         {
             int moneyNeeded = LevelSelect.instance.currentLevel.costToUnlock - player.Money;
-            text.text = failedTextStart + moneyNeeded.ToString() + failedTextEnd;
-            YesButton.SetActive(false);
-            NoButton.SetActive(false);
-            OKButton.SetActive(true);
+            popup.UpdateText(failedTextStart + moneyNeeded.ToString() + failedTextEnd);
+            popup.ShowPopup();
         }
-	}
-
-    public void SetInteractable()
-    {
-        canUnlock = LevelSelect.instance.currentLevel.costToUnlock <= player.Money;
     }
 }

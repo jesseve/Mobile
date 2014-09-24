@@ -12,67 +12,84 @@ public class LevelManager : GameManager {
 
     public delegate void ChangePhase();
     public event ChangePhase changePhase;
+    public delegate void GameFinished();
+    public event GameFinished gameOver;
 
-    public float borderPanelWidth;
+    public float borderPanelWidth;          //Percentage of how much width the sides will be taking from the game area.
 
     public float GameAreaWidth{
         get {
             return gameAreaWidth;
         }
-    }
+    }           //Getter for width of game area
     public float GameAreaWidthHalf
     {
         get
         {
             return gameAreaWidthHalf;
         }
-    }
+    }       //Getter for the half of game areas width
     private float gameAreaWidth;
-    private float gameAreaWidthHalf;
+    private float gameAreaWidthHalf;    
 
-    public float trackWidth;
+    public int gamePhase;                   //Container for game phase
 
-    public int gamePhase;
-
-    private PlayerManager player;
-    public GameObject scoreGUI;
-    public GameObject pauseGUI;
-    public GameObject menuGUI;
-    public GameObject gameOverGUI;
+    private BlockSpawner spawner;           //Reference to spawner
+    private PlayerManager player;           //Reference to player
+    public GUIHandler gui;                  //Reference to gui handling
 
     public int money;
-    public int score;
+    public int coins;
     public int highestCombo;
     public float timeBetweenPhases;
-    private float phaseStartTime;
-    private BlockSpawner spawner;
+    private float phaseStartTime;    
 
 
     public override void Awake()
     {
-        base.Awake();        
-        gameAreaWidth = (Camera.main.ScreenToWorldPoint(Vector3.right * Screen.width).x - Camera.main.ScreenToWorldPoint(Vector3.zero).x) * (100f - borderPanelWidth * 2f) * 0.01f; 
-        gameAreaWidthHalf = gameAreaWidth * 0.5f;
-        spawner = GameObject.FindGameObjectWithTag("Spawner").GetComponent<BlockSpawner>();
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerManager>();        
-        spawner.Init();
-        trackWidth = spawner.trackWidth;
-        SetGUI(menuGUI);
-        //StartGame();
-        
+        base.Awake();                       
     }
 
     public override void Update() {
-        print(GetState().ToString());
-        if (GetState() != State.Running) return;
-        if (Time.time - phaseStartTime > timeBetweenPhases) {
-            gamePhase++;
-            phaseStartTime = Time.time;
-            if(changePhase != null)
-                changePhase();
+        UpdatePhase();
+    }
+
+    /// <summary>
+    /// Updates the game phase when needed
+    /// </summary>
+    private void UpdatePhase() {
+        if (GetState() != State.Running) return;                //Only increase the gamephase when actually playing
+        if (Time.time - phaseStartTime > timeBetweenPhases)
+        {   //Increase phase when enough time has passed
+            gamePhase++;                                        //Increase the phase by 1
+            phaseStartTime = Time.time;                         //Get the time when phase started
+            if (changePhase != null)                             //Need to check if there are no subscribers to event
+                changePhase();                                  //Call for the changePhase event
         }
     }
 
+    /// <summary>
+    /// Get the component instances from initializer
+    /// </summary>
+    public void Init() {
+        CalculateGamearea();
+        spawner = Initializer.instance.spawner;
+        player = Initializer.instance.player;        
+    }
+
+    /// <summary>
+    /// Calculates the area the player is able to move in.    
+    /// </summary>
+    private void CalculateGamearea() {
+        gameAreaWidth = (Camera.main.ScreenToWorldPoint(Vector3.right * Screen.width).x  //The X coordinate of the right side
+            - Camera.main.ScreenToWorldPoint(Vector3.zero).x)                            //substract the X coordinate of the left side
+            * (100f - borderPanelWidth * 2f) * 0.01f;                                    //multiply by the percentage the sides will be taking
+        gameAreaWidthHalf = gameAreaWidth * 0.5f;
+    }
+
+    /// <summary>
+    /// Initialize the static instance of level manager
+    /// </summary>
     protected override void SetupManager()
     {
         if (instance != null)
@@ -82,89 +99,92 @@ public class LevelManager : GameManager {
     }
 
     public void Pause() {
+        SoundHandler.instance.PauseSound();
         if (GetState() == State.Running) {
-            SetState(State.Pause);
-            pauseGUI.SetActive(true);
-            pauseGUI.transform.Find("Confirm").gameObject.SetActive(false);
-            pauseGUI.transform.Find("Continue").gameObject.SetActive(true);
-            pauseGUI.transform.Find("QuitGame").gameObject.SetActive(true);
+            SetState(State.Pause);            
             Time.timeScale = 0f;
         }
         else if (GetState() == State.Pause) {
-            SetState(State.Running);
-            pauseGUI.SetActive(false);
+            SetState(State.Running);            
             Time.timeScale = 1;
         }
     }     
 
+    /// <summary>
+    /// Is called whenever the player quits the play mode
+    /// </summary>
     public void GameOver() {
-        SetState(State.Menu);
-        SetGUI(menuGUI);
+        SetState(State.Menu);               //Switch state back to menu
+        if (gameOver != null)
+            gameOver();                     //Call the gameover event
+        MusicHandler.instance.Switch();     //Swap from stage music to menu music
+        Time.timeScale = 1f;                //Reset timescale to normal
+        player.Reset();                     //Reset the player back to middle and stop from moving
+        spawner.GetLevelValues();           //Set phase 1 values to the spawner while looking at menu
+        gui.Menu();                         //Set menu canvas
     }
 
+    /// <summary>
+    /// Show only when the player finished the game.
+    /// Iterates through 0 to the score the player got 
+    /// and updates the values to show from GameOverGUIManager
+    /// </summary>
+    /// <returns></returns>
     public IEnumerator GameOverCalculator() {
         SetState(State.GameOver);
         money = 0;
-        player.AddMoney(player.score);
-        player.Save();
-        score = player.score;
+        player.AddMoney(player.coins);
+        Save();
+        coins = player.coins;
         highestCombo = player.highestCombo;
-        int originalScore = score;
-        int scoreToSubstract = score / 200 + 10;
+        int originalScore = coins;
+        int scoreToSubstract = coins / 200 + 10;
         player.Reset();
-        SetGUI(gameOverGUI);
+        gui.GameOver();       
         yield return new WaitForSeconds(2f);
-        while (score > 0) {            
-            score -= scoreToSubstract;
+        while (coins > 0) {            
+            coins -= scoreToSubstract;
             money += scoreToSubstract;
             if (money >= originalScore)
                 money = originalScore;
             yield return null;
         }
-        score = 0;
+        coins = 0;
         yield return new WaitForSeconds(4f);
-        SetState(State.Menu);
-        SetGUI(menuGUI);
+        GameOver();
     }
 
-    public void StartGame() {
-        SetState(State.Running);
-        spawner.Init();
-        player.InitPlayer();
-        SetGUI(scoreGUI);
-        timeBetweenPhases = LevelSelect.instance.currentLevel.timeBetweenPhases;
-        phaseStartTime = Time.time;
-        gamePhase = 0;
-        Time.timeScale = 1f;
+    /// <summary>
+    /// Initialize the gameobjects and launch the game
+    /// </summary>
+    public void StartGame() {        
+        CalculateGamearea();                                                        //Make sure the the game area is correct
+        timeBetweenPhases = LevelSelect.instance.currentLevel.timeBetweenPhases;    //get the current levels time between each phase
+        spawner.ResetSpawner(6f);                                                   //Reset the spawner and start it up after 6 seconds
+        SetState(State.Running);                                                    //Enable the game running state
+        player.Reset();                                                             //Reset the players values
+        MusicHandler.instance.Switch();                                             //Swap from menu music to stage music
+        gamePhase = 0;                                                              //Reset game phase
+        gui.StartGame();                                                            //Set the correct canvas
+        Initializer.instance.healthBar.ResetValues();                               //Reset the healthbars values
+        Time.timeScale = 1f;                                                        //Make sure timescale is correct
+        phaseStartTime = Time.time;                                                 //Record the starting time of the first phase
+    }        
+
+    /// <summary>
+    /// Save the inventory and levels
+    /// </summary>
+    public void Save() {
+        SaveLoad.Save();
     }
 
-    public void ConfirmQuit() {
-        if (GetState() == State.Menu) {
-            SetState(State.Confirm);
-            menuGUI.transform.Find("Confirm").gameObject.SetActive(true);
-            menuGUI.transform.Find("StartGame").gameObject.SetActive(false);
-            menuGUI.transform.Find("QuitGame").gameObject.SetActive(false);
-        }
-        else if (GetState() == State.Confirm) {
-            menuGUI.transform.Find("Confirm").gameObject.SetActive(false);
-            menuGUI.transform.Find("StartGame").gameObject.SetActive(true);
-            menuGUI.transform.Find("QuitGame").gameObject.SetActive(true);
-            SetState(State.Menu);
-        }
-    }
-
+    /// <summary>
+    /// Save and quit
+    /// </summary>
     public void Quit() {
-        player.Save();
+        Save();
         Application.Quit();
-    }
-
-    private void SetGUI(GameObject gui) {
-        scoreGUI.SetActive(false);
-        pauseGUI.SetActive(false);
-        menuGUI.SetActive(false);
-        gameOverGUI.SetActive(false);
-        gui.SetActive(true);
-    }
+    }    
     
 
 }

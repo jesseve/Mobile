@@ -12,6 +12,7 @@ public class Movement : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         velocity = new Vector3(speed, 0);
+        //Calculates the area player can move to
         gameAreaWidth = LevelManager.instance.GameAreaWidthHalf;
         gameAreaWidth -= transform.localScale.x * .5f;
         acceleration = 0;
@@ -50,5 +51,15 @@ public class Movement : MonoBehaviour {
         if (Mathf.Sign(direction) != Mathf.Sign(transform.position.x) && direction != 0)
             return true;
         return false;
+    }
+
+    /// <summary>
+    /// Updates the players movement values when they are upgraded
+    /// </summary>
+    /// <param name="speed"></param>
+    /// <param name="accSpeed"></param>
+    public void UpdateValues(float speed, float accSpeed) {
+        this.speed = speed;
+        this.accelerateSpeed = accSpeed;
     }
 }

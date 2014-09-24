@@ -99,7 +99,8 @@ public enum State
     Pause,
     Running,
     GameOver,
-    Confirm
+    Confirm,
+    Shop
 }
 public enum RunningState
 { 

@@ -4,71 +4,71 @@ using System.Collections;
 [System.Serializable]
 public class LevelSelect : MonoBehaviour {
 
-    public Level[] levels;
+    public delegate void LevelChanged();
+    public event LevelChanged levelChanged;
+    
+    public Level[] levels;                      //Array that contains every level of the game. Add more in the inspector
+    public Sprite[] levelSprites;               //Contains the sprites of every level. Has to be the same lenght as levels array
+    public BlockSpawner spawner;                //Reference to spawner
+    private BackGroundScript background;        //Reference to background controller
+    private PlayerManager player;               //Reference to player
 
-    public BlockSpawner spawner;
-    private BackGroundScript background;
-    private PlayerManager player;
+    private int selectedLevel;                  //integer pointing to the current level and levels sprite    
 
-    private int selectedLevel;
-
-    public GameObject StartGame;
-    public GameObject Unlock;
-
-
-    public static LevelSelect instance;
+    public static LevelSelect instance;         //Instance of this script
 
     public Level currentLevel {
         get {
             return levels[selectedLevel];
         }
-    }
+    }               //Getter for the current level
+    public Sprite currentSprite {
+        get {
+            return levelSprites[selectedLevel];
+        }
+    }             //Getter for the current levels sprite
 
-	// Use this for initialization
-	void Awake () {
+    void Awake() {
         if (instance != null)
             Destroy(instance);
 
-        instance = this;
-        spawner = GameObject.FindGameObjectWithTag("Spawner").GetComponent<BlockSpawner>();
-        background = GameObject.FindGameObjectWithTag("Background").GetComponent<BackGroundScript>();
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerManager>();        
-        SetGUI();
-	}
-
-    void Start() {
-        background.ChangeBackground(currentLevel.levelSprite);
+        instance = this;      
     }
-	
-    public void InitLevel() { }
 
+    /// <summary>
+    /// Finds all the references needed in this script
+    /// </summary>
+	public void Init () {
+        spawner = Initializer.instance.spawner; 
+        background = Initializer.instance.background;
+        player = Initializer.instance.player;        
+        background.ChangeBackground(currentSprite);
+	}
+	    
+    /// <summary>
+    /// Called from the arrow buttons in menu canvas
+    /// and changes the selected level
+    /// </summary>
+    /// <param name="direction"></param>
     public void ChangeLevel(int direction) {
+        if (levelChanged != null)
+            levelChanged();        
         selectedLevel += direction;
         if (selectedLevel >= levels.Length)
             selectedLevel = 0;
         else if (selectedLevel < 0)
             selectedLevel = levels.Length - 1;
-        background.ChangeBackground(currentLevel.levelSprite);
-        SetGUI();
+        background.ChangeBackground(currentSprite);
     }
 
+    /// <summary>
+    /// Unlocks the current level and makes it available to play
+    /// WARNING! Does not check if the player has enough money!
+    /// </summary>
     public void UnlockLevel() {
         currentLevel.unlocked = true;
         player.AddMoney(-currentLevel.costToUnlock);
-        SetGUI();
-    }
-
-    private void SetGUI()
-    {
-        if (currentLevel.unlocked)
-        {
-            StartGame.SetActive(true);
-            Unlock.SetActive(false);
-        }
-        else
-        {
-            Unlock.SetActive(true);
-            StartGame.SetActive(false);
-        }
-    }
+        SoundHandler.instance.PurchaseSound();
+        LevelManager.instance.Save();
+    }    
 }

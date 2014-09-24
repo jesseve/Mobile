@@ -4,6 +4,15 @@ using System.Collections;
 [System.Serializable]
 public class Level {
 
+    /*
+     *
+     * Holds all values of a level needed to get the level running
+     * Modify the values to make each level different
+     * 
+     */
+
+    public string name;
+
     public int colorCount;
     public int shapeCount;
     public int trackCount;
@@ -13,7 +22,7 @@ public class Level {
 
     public bool defaultBlockDirection = true;
 
-    public int scorePerBlock;
+    public int coinsPerBlock;
     public float comboMultiplier;
 
     public float timeBetweenPhases;
@@ -25,7 +34,5 @@ public class Level {
     public float timeBetweenRowsMax;
 
     public int blocksInRowMin;
-    public int blocksInRowMax;
-
-    public Sprite levelSprite;
+    public int blocksInRowMax;    
 }
