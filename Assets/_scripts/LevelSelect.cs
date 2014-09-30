@@ -50,14 +50,15 @@ public class LevelSelect : MonoBehaviour {
     /// and changes the selected level
     /// </summary>
     /// <param name="direction"></param>
-    public void ChangeLevel(int direction) {
-        if (levelChanged != null)
-            levelChanged();        
+    public void ChangeLevel(int direction) {                
         selectedLevel += direction;
+        
         if (selectedLevel >= levels.Length)
             selectedLevel = 0;
         else if (selectedLevel < 0)
             selectedLevel = levels.Length - 1;
+        if (levelChanged != null)
+            levelChanged();
         background.ChangeBackground(currentSprite);
     }
 

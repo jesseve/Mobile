@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class SoundHandler : MonoBehaviour {
@@ -7,18 +8,23 @@ public class SoundHandler : MonoBehaviour {
 
     private AudioSource source;
 
+    public Image buttonImage;
+
+    public Sprite muteOn, muteOff;
+
     public AudioClip[] comboSounds;
     public AudioClip damage, button, purchase, shield, pause;
 
     public bool muted;
 
-    void Awake()
+    void Start()
     {
         if (instance != null)
             Destroy(instance);
 
         instance = this;
         source = GetComponent<AudioSource>();
+        buttonImage.sprite = muted ? muteOn : muteOff;
     }
 
     /// <summary>
@@ -27,9 +33,15 @@ public class SoundHandler : MonoBehaviour {
     public void Mute() {
         muted = !muted;
         if (muted)
+        {
+            buttonImage.sprite = muteOn;
             source.volume = 0;
+        }
         else
+        {
+            buttonImage.sprite = muteOff;
             source.volume = 1;
+        }
     }        
 
     /// <summary>

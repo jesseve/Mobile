@@ -4,8 +4,7 @@ using System.Collections;
 
 public class InputManager : MonoBehaviour {
 
-    public Button quit;
-
+    public GUIHandler gui;
     private PlayerManager manager;
 	
     // Use this for initialization
@@ -18,14 +17,27 @@ public class InputManager : MonoBehaviour {
 
         //Decide what happens when player presses the back/escape button
         if (Input.GetKeyDown(KeyCode.Escape)) {
-            State s = LevelManager.instance.GetState();
+            State s = LevelManager.instance.GetState();            
             switch(s){
-                case State.Running: case State.Pause:
-                    LevelManager.instance.Pause();
+                case State.Running:
+                    if (Initializer.instance.hints.HintsEnabled)
+                        Initializer.instance.hints.Stop();
+                    gui.Pause();
                     break;
-                case State.Menu: case State.Confirm:
+                case State.Pause:
+                    if (gui.IsConfirming())
+                        gui.Confirm(true);
+                    else
+                        gui.Confirm();
                     break;
-                case State.Shop:                    
+                case State.Menu:
+                    if (gui.IsConfirming())
+                        gui.Confirm(true);
+                    else
+                        gui.Confirm();
+                    break;                
+                case State.Shop:
+                    gui.Menu();
                     break;
 
             }

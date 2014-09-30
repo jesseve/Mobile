@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class MusicHandler : MonoBehaviour {
@@ -6,19 +7,24 @@ public class MusicHandler : MonoBehaviour {
     public static MusicHandler instance;
 
     private AudioSource source;
-    
+
+    public Image buttonImage;
+
+    public Sprite muteOn, muteOff;
+
     public AudioClip menu;
     public AudioClip stage;
 
     public bool muted;
 
-    void Awake()
+    void Start()
     {
         if (instance != null)
             Destroy(instance);
 
         instance = this;
         source = GetComponent<AudioSource>();
+        buttonImage.sprite = muted ? muteOn : muteOff;
     }
 
     /// <summary>
@@ -27,9 +33,15 @@ public class MusicHandler : MonoBehaviour {
     public void Mute() {
         muted = !muted;
         if (muted)
+        {
+            buttonImage.sprite = muteOn;
             source.volume = 0;
+        }
         else
-            source.volume = 1;         
+        {
+            buttonImage.sprite = muteOff;
+            source.volume = 1;
+        }
     }    
 
     /// <summary>

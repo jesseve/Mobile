@@ -9,6 +9,8 @@ public class PlayerManager : Block {
     public int coins;                   //Coins the player finds during a game
     public int moneyToAdd;              //How much money the player gets when he collects a diamond
     public int combo;                   //Counter to how many correct diamond player collected in a row
+    public delegate void Scored();
+    public event Scored scored;
 
     //Getter for player health
     public int health {
@@ -60,6 +62,8 @@ public class PlayerManager : Block {
             coins += moneyToAdd * combo;                                    //Update coins earned value
             SetShape();                                                     //Set sprite renderes values
             EmitParticles();                                                //Emit particles from particle system
+            if (scored != null)
+                scored();
         }
         else if(!takenDamage)                                               //Check if already taken damage and if the other diamond hasn't same color or shape
             TakeDamage();                                                   //If yes then take damage
@@ -73,9 +77,10 @@ public class PlayerManager : Block {
     public void InitPlayer() {
         movement = GetComponent<Movement>();                            //Get the reference to movement component
         particles.renderer.sortingLayerName = sprite.sortingLayerName;  //Set the sprite rendering order of particle system to same as player
-        inventory = SaveLoad.current.inventory;                         //Get the saved inventory
+        GetValuesFromInventory();
         Money = inventory.money;                                        //Set Money to match inventory money
         Reset();                                                        //Reset all values to be ready for starting
+        LevelSelect.instance.levelChanged += ReScale;
     }
 
     /// <summary>

@@ -3,7 +3,7 @@ using System.Collections;
 
 [System.Serializable]
 public class Inventory {
-
+    
     public int money;
 
     public float speed = 6f;            //how fast the player moves horizontally
@@ -11,7 +11,7 @@ public class Inventory {
     public float position = 0;          //number of unity units the player is from middle towards the bottom  
     public bool shield;                 //Have the player purchased the shield
     public float shieldCooldown = 10;   //how many seconds it takes for the shield to block again
-    public int health = 3;              //health of the player
+    public int health = 3;
 
     //Current level of upgradeable items
     private int speedLevel = 1;
@@ -21,37 +21,23 @@ public class Inventory {
     private int healthLevel = 1;         
 
     //Maximum level of the upgrades
-    private int maxSpeed = 12;
-    private int maxAcc = 12;
-    private int maxPosition = 12;
-    private int maxShield = 12;
-    private int maxHealth = 12;
+    public int maxSpeed = 12;
+    public int maxAcc = 12;
+    public int maxPosition = 6;
+    public int maxShield = 10;
+    public int maxHealth = 8;
+
 
     /// <summary>
     /// Upgrades the item given as parameter if player has enough money for it
     /// </summary>
     /// <param name="u"></param>
     /// <returns>True if upgrade was succesful</returns>
-    public bool UpgradeItem(Upgrade u) {
-        Debug.Log("bought " + u.ToString());
+    public bool UpgradeItem(Upgrade u) {        
         PlayerManager p = Initializer.instance.player;
         int price = GetUpgradePrice(u);
-        switch (u) { 
-            case Upgrade.Acceleration:
-                if (p.Money >= price) {
-                    if (accelerationLevel < maxAcc)
-                    {
-                        p.AddMoney(-price);
-                        SoundHandler.instance.PurchaseSound();
-                        accelerationLevel++;
-                        acceleration += 0.03f;
-                    }
-                }
-                else {
-                    return false;
-                }
-                break;
-            case Upgrade.MaxHits:
+        switch (u) {                                                                                 
+            case Upgrade.Health:
                 if (p.Money >= price) {
                     if (healthLevel < maxHealth)
                     {
@@ -80,8 +66,10 @@ public class Inventory {
                 }
                 break;
             case Upgrade.Shield:
-                if (!shield) {
+                if (!shield && p.Money >= price)
+                {
                     shield = true;
+                    p.AddMoney(-price);
                     SoundHandler.instance.PurchaseSound();
                     break;
                 }
@@ -105,6 +93,7 @@ public class Inventory {
                         p.AddMoney(-price);
                         SoundHandler.instance.PurchaseSound();
                         speedLevel++;
+                        acceleration += 0.03f;
                         speed += 0.5f;
                     }
                 }
@@ -113,8 +102,8 @@ public class Inventory {
                 }
                 break;
         }
-        SaveLoad.Save();
         p.GetValuesFromInventory();
+        SaveLoad.Save();        
         return true;
     }
 
@@ -124,13 +113,25 @@ public class Inventory {
     /// </summary>
     /// <param name="inv"></param>
     public void UpdateInventory(Inventory inv) {
-        money = inv.money;
-        speed = inv.speed;
-        acceleration = inv.acceleration;
-        position = inv.position;
-        shield = inv.shield;
-        shieldCooldown = inv.shieldCooldown;
-        health = inv.health;
+        this.money = inv.money;
+        this.speed = inv.speed;
+        this.acceleration = inv.acceleration;
+        this.position = inv.position;
+        this.shield = inv.shield;
+        this.shieldCooldown = inv.shieldCooldown;
+        this.health = inv.health;
+
+        this.healthLevel = inv.healthLevel;
+        this.speedLevel = inv.speedLevel;
+        this.positionLevel = inv.positionLevel;
+        this.shieldCooldownLevel = inv.shieldCooldownLevel;
+        this.accelerationLevel = inv.accelerationLevel;
+
+        /*this.maxAcc = inv.maxAcc;
+        this.maxHealth = inv.maxHealth;
+        this.maxPosition = inv.maxPosition;
+        this.maxShield = inv.maxShield;
+        this.maxSpeed = inv.maxSpeed;*/
     }
 
     /// <summary>
@@ -140,30 +141,25 @@ public class Inventory {
     /// <returns>The price or 0 if the upgrade is fully upgraded</returns>
     public int GetUpgradePrice(Upgrade u) {
         switch (u)
-        {
-            case Upgrade.Acceleration:
-                if(accelerationLevel < maxAcc)
-                    return accelerationLevel * accelerationLevel * 1000;
-                break;
-            case Upgrade.MaxHits:
+        {            
+            case Upgrade.Health:
                 if(healthLevel < maxHealth)
-                    return healthLevel * healthLevel * 1000;
+                    return healthLevel * healthLevel * 4500;
                 break;
             case Upgrade.Position:
                 if(positionLevel < maxPosition)
-                    return positionLevel * positionLevel * 1000;
+                    return positionLevel * positionLevel * positionLevel * 1500;
                 break;
             case Upgrade.Shield:
                 if (shield)
                 {
                     if (shieldCooldownLevel < maxShield)
-                        return shieldCooldownLevel * shieldCooldownLevel * 1000;
+                        return shieldCooldownLevel * shieldCooldownLevel * 3000;
                     else
                         return 0;
                 }
                 else
-                    return 1000000;
-                break;
+                    return 1000000;                
             case Upgrade.Speed:
                 if(speedLevel < maxSpeed)
                     return speedLevel * speedLevel * 1000;
@@ -185,7 +181,7 @@ public class Inventory {
         {
             case Upgrade.Acceleration:
                 return accelerationLevel.ToString() + "/" + maxAcc.ToString();
-            case Upgrade.MaxHits:
+            case Upgrade.Health:
                 return healthLevel.ToString() + "/" + maxHealth.ToString();
             case Upgrade.Position:
                 return positionLevel.ToString() + "/" + maxPosition.ToString();
@@ -207,5 +203,5 @@ public enum Upgrade {
     Acceleration,
     Position,
     Shield,
-    MaxHits
+    Health
 }

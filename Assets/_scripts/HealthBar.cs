@@ -8,6 +8,7 @@ public class HealthBar : MonoBehaviour {
     private PlayerManager player;
 
     public Image healthBar;
+    public Image shield;
 
 	// Use this for initialization
 	void Awake () {
@@ -19,6 +20,7 @@ public class HealthBar : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {        
         slider.value = player.health;
+        shield.enabled = player.shieldOn;
 	}    
 
     public void Init() {

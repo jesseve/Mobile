@@ -8,8 +8,8 @@ public class LevelUnlock : MonoBehaviour {
     public PopUpController popup;
     private PlayerManager player;
 
-    private string failedTextStart = "You need to earn $";
-    private string failedTextEnd = " to unlock this level";
+    private string failedTextStart = "You need D";
+    private string failedTextEnd = " more to unlock this level";
 
 
     public bool canUnlock;
@@ -26,7 +26,7 @@ public class LevelUnlock : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         canStart = LevelSelect.instance.currentLevel.unlocked;
-        buttonText.text = canStart ? "Start" : "Unlock";        
+        buttonText.text = canStart ? "Play" : "Unlock";        
 	}
     
 

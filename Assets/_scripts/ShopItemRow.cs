@@ -3,8 +3,7 @@ using UnityEngine.UI;
 using System.Collections;
 
 public class ShopItemRow : MonoBehaviour {
-
-    private Inventory playerInventory;      //Reference to players inventory
+   
     private PlayerManager player;           //Reference to player
     public Text info;                       //Reference to ui text of info box
     public Text lowMoneyText;               //Reference to ui text of "failed to upgrade" popup
@@ -22,7 +21,6 @@ public class ShopItemRow : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         player = Initializer.instance.player;
-        playerInventory = player.inventory;
         infoAnimator.Play("default");
 	}
 	
@@ -33,11 +31,11 @@ public class ShopItemRow : MonoBehaviour {
         if (info.IsActive())
             infoBox.UpdateText(infoText);
         if (lowMoneyText.IsActive()) {
-            lowMoney.UpdateText("You need $" + (playerInventory.GetUpgradePrice(upgrade) - player.Money).ToString() +" more to upgrade");
+            lowMoney.UpdateText("You need D" + (player.inventory.GetUpgradePrice(upgrade) - player.Money).ToString() +" more to upgrade");
         }
-        upgradeLevel.text = playerInventory.GetUpgradeLevel(upgrade);
-        int price = playerInventory.GetUpgradePrice(upgrade);
-        upgradePriceText.text = price == 0 ? "FULL" : "$" + price.ToString();
+        upgradeLevel.text = player.inventory.GetUpgradeLevel(upgrade);
+        int price = player.inventory.GetUpgradePrice(upgrade);
+        upgradePriceText.text = price == 0 ? "FULL" : "D " + price.ToString();
 	}
 
     /// <summary>
@@ -69,7 +67,7 @@ public class ShopItemRow : MonoBehaviour {
     /// Else shows the popup
     /// </summary>
     public void BuyUpgrade() {
-        if (!playerInventory.UpgradeItem(upgrade)) {
+        if (!player.inventory.UpgradeItem(upgrade)) {
             lowMoney.ShowPopup();
             //buyAnimator.Play("popup");
         }

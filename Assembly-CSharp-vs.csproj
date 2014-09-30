@@ -58,6 +58,7 @@
      <Compile Include="Assets\_scripts\InputManager.cs" />
      <Compile Include="Assets\_scripts\Inventory.cs" />
      <Compile Include="Assets\_scripts\Level.cs" />
+     <Compile Include="Assets\_scripts\LevelInfo.cs" />
      <Compile Include="Assets\_scripts\LevelManager.cs" />
      <Compile Include="Assets\_scripts\LevelSelect.cs" />
      <Compile Include="Assets\_scripts\LevelUnlock.cs" />

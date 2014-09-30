@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
+//using System.Collections.Generic;
 
 [RequireComponent(typeof(SpriteRenderer))]
 public class Block : MonoBehaviour {

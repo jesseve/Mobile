@@ -14,8 +14,14 @@ public class GUIHandler : MonoBehaviour {
 
     public HintHandler hints;
 
+    private bool isConfirming;
+
     void Awake() {
         SetGUI(menuCanvas);
+    }    
+
+    public bool IsConfirming() {
+        return isConfirming;
     }
 
     /// <summary>
@@ -59,6 +65,7 @@ public class GUIHandler : MonoBehaviour {
                 QuitGame(quit);
                 break;
         }
+        isConfirming = false;
     }
 
     /// <summary>
@@ -89,6 +96,7 @@ public class GUIHandler : MonoBehaviour {
     /// Enables the confrimation window
     /// </summary>
     public void Confirm() {
+        isConfirming = true;
         SetGUI(confirmCanvas);
     }
     
@@ -103,6 +111,7 @@ public class GUIHandler : MonoBehaviour {
     /// Enables the main menu
     /// </summary>
     public void Menu() {
+        LevelManager.instance.SetState(State.Menu);
         SetGUI(menuCanvas);
     }
     
@@ -110,6 +119,7 @@ public class GUIHandler : MonoBehaviour {
     /// Enables the shop
     /// </summary>
     public void Shop() {
+        LevelManager.instance.SetState(State.Shop);
         SetGUI(shopCanvas);
     }
 

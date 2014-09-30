@@ -4,6 +4,10 @@ using System.Collections;
 public class SpawnedBlock : Block {
 
     public bool used;   //The diamond can only be launched only if its not used
+
+    public static int id = 0;
+
+    public SpawnedBlock() { id++; }
     
     /// <summary>
     /// On collision with destroyer send the diamond back to the spawner

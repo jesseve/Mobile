@@ -26,6 +26,9 @@ public class BlockSpawner : MonoBehaviour {
     private List<Track> tracks;                                             //List of tracks. A track has a boolean value "used" and position
     private List<GameObject> blockObjects = new List<GameObject>();         //List of diamond prefabs. On launch will take the objects and activate them.
     private List<SpawnedBlock> blockScripts = new List<SpawnedBlock>();     //SpawnedBlock script of each diamond in the blockObjects list.
+     
+
+
 
     /// <summary>
     /// Generates the blockpool
@@ -41,6 +44,7 @@ public class BlockSpawner : MonoBehaviour {
     /// </summary>
     private void OnEnable() {
         LevelManager.instance.changePhase += ChangePhase;
+        LevelSelect.instance.levelChanged += ChangeLevel;
     }
 
     /// <summary>
@@ -63,8 +67,26 @@ public class BlockSpawner : MonoBehaviour {
     /// Controls what happens when level manager changes phase
     /// </summary>
     private void ChangePhase() {
-        phase = LevelManager.instance.gamePhase;
-        if (blocksInRowMin < tracksCount - 4 && phase % 2 == 0) {
+        phase = LevelManager.instance.gamePhase;        
+        int phaseAction = phase % 2;
+        if (phase < 11) {
+            switch (phaseAction) {
+                case 0:
+                    blockSpeed += blockSpeedIncrease;
+                    timeBetweenRowsMin *= .9f;
+                    if(blocksInRowMin < tracksCount / 2)
+                        blocksInRowMin++;
+                    break;
+                case 1:
+                    timeBetweenRowsMax *= .9f;
+                    if(blocksInRowMax <= tracksCount - 1)
+                        blocksInRowMax++;
+                    break;
+            }
+        }
+        else if(phaseAction == 0 && blockSpeed < 8)
+            blockSpeed += blockSpeedIncrease;
+        /*if (blocksInRowMin < tracksCount - 4 && phase % 2 == 0) {
             blocksInRowMin++;
         }
         if (blocksInRowMax < tracksCount - 1) {            
@@ -76,7 +98,7 @@ public class BlockSpawner : MonoBehaviour {
                 timeBetweenRowsMax -= 0.15f;
             }
             blockSpeed += blockSpeedIncrease;
-        }
+        }*/
     }
 
     #region Block_Methods    
@@ -213,6 +235,14 @@ public class BlockSpawner : MonoBehaviour {
         {            
             timeBetweenRows = 5f;       //Wait for 5 seconds before first spawn
         }
+    }
+
+    /// <summary>
+    /// Updates the values and resizes blocks when player changes level
+    /// </summary>
+    private void ChangeLevel() {
+        GetLevelValues();
+        ResetTracks();
     }
 
     #endregion

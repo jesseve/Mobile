@@ -122,6 +122,7 @@ public class LevelManager : GameManager {
         player.Reset();                     //Reset the player back to middle and stop from moving
         spawner.GetLevelValues();           //Set phase 1 values to the spawner while looking at menu
         gui.Menu();                         //Set menu canvas
+        Save();
     }
 
     /// <summary>
@@ -137,6 +138,13 @@ public class LevelManager : GameManager {
         Save();
         coins = player.coins;
         highestCombo = player.highestCombo;
+        
+        if(highestCombo > LevelSelect.instance.currentLevel.highestCombo)
+            LevelSelect.instance.currentLevel.highestCombo = highestCombo;
+        if (coins > LevelSelect.instance.currentLevel.bestScore)
+            LevelSelect.instance.currentLevel.bestScore = coins;
+
+
         int originalScore = coins;
         int scoreToSubstract = coins / 200 + 10;
         player.Reset();

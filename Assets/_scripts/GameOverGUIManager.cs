@@ -12,7 +12,7 @@ public class GameOverGUIManager : MonoBehaviour {
      * 
      */
 
-    public Text coins;
+    //public Text coins;
     public Text combo;
     public Text money;
 
@@ -24,7 +24,7 @@ public class GameOverGUIManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         if (LevelManager.instance.GetState() != State.GameOver) return;
-        coins.text = LevelManager.instance.coins.ToString();
+        //coins.text = LevelManager.instance.coins.ToString();
         combo.text = LevelManager.instance.highestCombo.ToString();
         money.text = LevelManager.instance.money.ToString();
 	}

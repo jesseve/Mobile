@@ -17,6 +17,9 @@ public class Level {
     public int shapeCount;
     public int trackCount;
 
+    public int highestCombo = 0;
+    public int bestScore = 0;
+
     public bool unlocked;
     public int costToUnlock;
 
