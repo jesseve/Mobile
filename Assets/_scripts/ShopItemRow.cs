@@ -31,11 +31,11 @@ public class ShopItemRow : MonoBehaviour {
         if (info.IsActive())
             infoBox.UpdateText(infoText);
         if (lowMoneyText.IsActive()) {
-            lowMoney.UpdateText("You need D" + (player.inventory.GetUpgradePrice(upgrade) - player.Money).ToString() +" more to upgrade");
+            lowMoney.UpdateText("You need " + (player.inventory.GetUpgradePrice(upgrade) - player.Money).ToString() +" Diamond Dollars more to upgrade");
         }
         upgradeLevel.text = player.inventory.GetUpgradeLevel(upgrade);
         int price = player.inventory.GetUpgradePrice(upgrade);
-        upgradePriceText.text = price == 0 ? "FULL" : "D " + price.ToString();
+        upgradePriceText.text = price == 0 ? "FULL" : price.ToString();
 	}
 
     /// <summary>

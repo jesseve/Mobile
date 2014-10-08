@@ -3,32 +3,50 @@ using UnityEngine.UI;
 using System.Collections;
 
 public class LevelUnlock : MonoBehaviour {
-    
-    public Button button;
+
+    public Sprite buttonImageStart;
+    public Sprite buttonImageUnlock;
     public PopUpController popup;
     private PlayerManager player;
 
     private string failedTextStart = "You need D";
     private string failedTextEnd = " more to unlock this level";
 
+    private Image buttonImage;
 
     public bool canUnlock;
     public bool canStart;
 
-    public Text buttonText;
+    public Text unlockCostText;
+    public Image unlockDollarImage;
     
 	// Use this for initialization
 	void Start () {
         player = Initializer.instance.player;
         LevelSelect.instance.levelChanged += ChangeLevel;
+        buttonImage = GetComponent<Image>();
 	}    
 	
 	// Update is called once per frame
 	void Update () {
-        canStart = LevelSelect.instance.currentLevel.unlocked;
-        buttonText.text = canStart ? "Play" : "Unlock";        
+        canStart = LevelSelect.instance.currentLevel.unlocked;        
+        buttonImage.sprite = canStart ? buttonImageStart : buttonImageUnlock;
+        SetUnlockCost();
 	}
-    
+
+    /// <summary>
+    /// Updates the text showing the cost to unlock
+    /// and disables the dollar image if unlocked
+    /// </summary>
+    private void SetUnlockCost() {
+        unlockDollarImage.enabled = !canStart;
+        if(!canStart) {
+            unlockCostText.text = LevelSelect.instance.currentLevel.costToUnlock.ToString();            
+        }
+        else {
+            unlockCostText.text = "";
+        }
+    }
 
     /// <summary>
     /// Disable the pop up window when the player pushed the level change arrow buttons
