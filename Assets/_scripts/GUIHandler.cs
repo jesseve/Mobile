@@ -11,6 +11,7 @@ public class GUIHandler : MonoBehaviour {
     public Canvas pauseCanvas;
     public Canvas shopCanvas;
     public Canvas confirmCanvas;
+	public Canvas hintsCanvas;
 
     public HintHandler hints;
 
@@ -99,6 +100,12 @@ public class GUIHandler : MonoBehaviour {
         isConfirming = true;
         SetGUI(confirmCanvas);
     }
+
+
+	public void Hints(){
+		LevelManager.instance.SetState (State.Hints);
+		SetGUI (hintsCanvas);
+	}
     
     /// <summary>
     /// Enables the game over canvas
@@ -135,6 +142,7 @@ public class GUIHandler : MonoBehaviour {
         pauseCanvas.enabled = false;
         shopCanvas.enabled = false;
         confirmCanvas.enabled = false;
+		hintsCanvas.enabled = false;
         canvas.enabled = true;
     }
 }

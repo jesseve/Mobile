@@ -9,8 +9,8 @@ public class LevelUnlock : MonoBehaviour {
     public PopUpController popup;
     private PlayerManager player;
 
-    private string failedTextStart = "You need D";
-    private string failedTextEnd = " more to unlock this level";
+    private string failedTextStart = "You need ";
+    private string failedTextEnd = " Diamond Dollars more to unlock this level";
 
     private Image buttonImage;
 

@@ -39,7 +39,9 @@ public class InputManager : MonoBehaviour {
                 case State.Shop:
                     gui.Menu();
                     break;
-
+				case State.Hints:
+					gui.Menu();
+					break;
             }
         }
         
