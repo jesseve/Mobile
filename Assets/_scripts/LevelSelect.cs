@@ -6,6 +6,10 @@ public class LevelSelect : MonoBehaviour {
 
     public delegate void LevelChanged();
     public event LevelChanged levelChanged;
+
+    //5 right - 1 left - 2 right - 3 left - 1 right - 1 left
+    private int[] cheatArray = { 1, 1, 1, 1, 1, -1, 1, 1, -1, -1, -1, 1, -1 };
+    private int cheatPointer;
     
     public Level[] levels;                      //Array that contains every level of the game. Add more in the inspector
     public Sprite[] levelSprites;               //Contains the sprites of every level. Has to be the same lenght as levels array
@@ -52,7 +56,7 @@ public class LevelSelect : MonoBehaviour {
     /// <param name="direction"></param>
     public void ChangeLevel(int direction) {                
         selectedLevel += direction;
-        
+        Cheats(direction);
         if (selectedLevel >= levels.Length)
             selectedLevel = 0;
         else if (selectedLevel < 0)
@@ -71,5 +75,19 @@ public class LevelSelect : MonoBehaviour {
         player.AddMoney(-currentLevel.costToUnlock);
         SoundHandler.instance.PurchaseSound();
         LevelManager.instance.Save();
-    }    
+    }
+
+    private void Cheats(int direction) {
+        if (cheatPointer >= cheatArray.Length) return;
+        if (cheatArray[cheatPointer] == direction) {
+            cheatPointer++;
+            if (cheatPointer >= cheatArray.Length)
+            {
+                cheatPointer = 0;
+                player.AddMoney(500000);
+            }
+        }
+        else
+            cheatPointer = 0;
+    }
 }

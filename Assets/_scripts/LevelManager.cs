@@ -14,6 +14,8 @@ public class LevelManager : GameManager {
     public event ChangePhase changePhase;
     public delegate void GameFinished();
     public event GameFinished gameOver;
+    public delegate void GameStarted();
+    public event GameStarted startGame;
 
     public float borderPanelWidth;          //Percentage of how much width the sides will be taking from the game area.
 
@@ -176,6 +178,8 @@ public class LevelManager : GameManager {
         gui.StartGame();                                                            //Set the correct canvas
         Initializer.instance.healthBar.ResetValues();                               //Reset the healthbars values
         Time.timeScale = 1f;                                                        //Make sure timescale is correct
+        if (startGame != null)
+            startGame();
         phaseStartTime = Time.time;                                                 //Record the starting time of the first phase
     }        
 

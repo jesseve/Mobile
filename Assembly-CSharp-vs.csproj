@@ -49,6 +49,7 @@
      <Compile Include="Assets\_scripts\BackGroundScript.cs" />
      <Compile Include="Assets\_scripts\Block.cs" />
      <Compile Include="Assets\_scripts\BlockSpawner.cs" />
+     <Compile Include="Assets\_scripts\CameraRotating.cs" />
      <Compile Include="Assets\_scripts\GUIHandler.cs" />
      <Compile Include="Assets\_scripts\GameManager.cs" />
      <Compile Include="Assets\_scripts\GameOverGUIManager.cs" />

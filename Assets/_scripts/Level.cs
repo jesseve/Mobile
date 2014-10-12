@@ -37,5 +37,9 @@ public class Level {
     public float timeBetweenRowsMax;
 
     public int blocksInRowMin;
-    public int blocksInRowMax;    
+    public int blocksInRowMax;
+
+    public int cameraRotatingPhaseStart;
+    public int cameraRotatingPhaseEnd;
+    public float cameraRotatingSpeed;
 }
